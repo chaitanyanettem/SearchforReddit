@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setTitle("Nautilus");
         displayText = ((TextView) findViewById(R.id.temp_textview));
         Log.d("MainActivity.java", "onCreate");
         assert(displayText !=null);
