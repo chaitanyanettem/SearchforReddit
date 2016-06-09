@@ -17,9 +17,10 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Nautilus");
         displayText = ((TextView) findViewById(R.id.temp_textview));
         Log.d("MainActivity.java", "onCreate");
-        assert(displayText !=null);
 
+        assert(displayText !=null);
         displayText.setText("Share text/links from other apps");
+
         Intent intent = getIntent();
         receiveIntent(intent);
     }
@@ -46,16 +47,12 @@ public class MainActivity extends AppCompatActivity {
         if (Intent.ACTION_SEND.equals(action) && type!=null) {
             Log.d("MainActivity.java", "receiveIntent() - " + "Intent verified");
             if ("text/plain".equals(type)) {
-                handleSendText(intent, displayText);
+                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                Log.d("MainActivity.java", "Shared Text:" + sharedText);
+                if (sharedText != null) {
+                    displayText.setText(sharedText);
+                }
             }
-        }
-    }
-
-    void handleSendText(Intent intent, TextView displayText) {
-        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        Log.d("MainActivity.java", "Shared Text:" + sharedText);
-        if (sharedText != null) {
-            displayText.setText(sharedText);
         }
     }
 }
