@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import chaitanya.im.searchforreddit.DataModel.Result;
+
 public class MainActivity extends AppCompatActivity {
 
     TextView displayText;
@@ -15,10 +17,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setTitle("Nautilus");
-        displayText = ((TextView) findViewById(R.id.temp_textview));
+        displayText = ((TextView) findViewById(R.id.shared_content));
         Log.d("MainActivity.java", "onCreate");
 
-        assert(displayText !=null);
+        assert(displayText != null);
         displayText.setText("Share text/links from other apps");
 
         Intent intent = getIntent();
@@ -55,5 +57,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
 

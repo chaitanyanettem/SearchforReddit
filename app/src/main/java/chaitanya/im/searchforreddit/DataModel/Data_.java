@@ -1,4 +1,4 @@
-package chaitanya.im.searchforreddit.data;
+package chaitanya.im.searchforreddit.DataModel;
 
 import java.util.ArrayList;
 import java.util.List;

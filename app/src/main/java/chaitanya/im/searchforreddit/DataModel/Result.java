@@ -1,8 +1,5 @@
-package chaitanya.im.searchforreddit.data;
+package chaitanya.im.searchforreddit.DataModel;
 
-/**
- * Created by arrayjumper on 9/6/16.
- */
 public class Result {
     private String kind;
     private Data data;

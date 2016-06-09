@@ -1,4 +1,4 @@
-package chaitanya.im.searchforreddit.data;
+package chaitanya.im.searchforreddit.DataModel;
 
 public class Media {
     private Oembed_ oembed;

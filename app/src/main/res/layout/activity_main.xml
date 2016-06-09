@@ -10,9 +10,14 @@
     tools:context="chaitanya.im.searchforreddit.MainActivity">
 
     <TextView
-        android:id="@+id/temp_textview"
+        android:id="@+id/shared_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="web"
         android:text="Hello World!" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/label"/>
 </RelativeLayout>
