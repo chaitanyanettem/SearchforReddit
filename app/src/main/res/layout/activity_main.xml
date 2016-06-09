@@ -13,11 +13,14 @@
         android:id="@+id/shared_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:text="Hello World!" />
+        android:autoLink="web"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/label"/>
+        android:id="@+id/label"
+        android:text="Loading..."
+        android:visibility="gone"
+        android:layout_below="@+id/shared_content"/>
+
 </RelativeLayout>
