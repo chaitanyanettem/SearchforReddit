@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Data {
     private String modhash;
-    private List<Child> children = new ArrayList<Child>();
+    private List<Child> children = new ArrayList<>();
     private String after;
     private String before;
     private Object facets;
