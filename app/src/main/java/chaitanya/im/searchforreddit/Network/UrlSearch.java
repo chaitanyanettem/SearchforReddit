@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.R;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,15 +23,21 @@ public class UrlSearch {
     public UrlSearch(String base_url, AppCompatActivity _activity) {
         activity = _activity;
         label = (TextView) activity.findViewById(R.id.label);
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(base_url)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         endpoint = retrofit.create(RedditEndpointInterface.class);
     }
 
-    public void getResults (String query){
-        Call<Result> call = endpoint.getResults(query);
+    public void executeSearch(String query){
+        Call<Result> call = endpoint.getSearchResults(query);
         call.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
@@ -50,6 +58,9 @@ public class UrlSearch {
     }
 
     void updateDialog() {
-        label.setText("Kind:" + result.getKind());
+        if (result.getData().getChildren()!=null)
+            label.setText("children size:" + result.getData().getChildren().size());
+        else
+            label.setText("No Results found");
     }
 }

@@ -9,6 +9,6 @@ public interface RedditEndpointInterface {
 
     // https://www.reddit.com/search.json?q=url:https://www.youtube.com/watch?v=CVEuPmVAb8o?t=1s&sort=top&t=all
     @GET("search.json")
-    Call<Result> getResults(@Query("q") String query);
+    Call<Result> getSearchResults(@Query("q") String query);
 
 }
