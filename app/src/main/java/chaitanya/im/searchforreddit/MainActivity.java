@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.TextView;
 
-import chaitanya.im.searchforreddit.DataModel.Result;
+import java.util.regex.Matcher;
+
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     void receiveIntent(Intent intent) {
         String action = intent.getAction();
         intent.getFlags();
+        int flag = 0;
         Log.d("MainActivity.java", "receiveIntent() toString - " + intent.toString());
         String type = intent.getType();
 
@@ -60,12 +63,25 @@ public class MainActivity extends AppCompatActivity {
             if ("text/plain".equals(type)) {
                 label.setVisibility(View.VISIBLE);
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                String query = "url:" + sharedText + "&sort=top" + "&t=all";
-                urlSearch.getResults(query);
-
+                Matcher m = Patterns.WEB_URL.matcher(sharedText);
+                while(m.find()) {
+                    Log.d("receiveIntent - url", m.group());
+                }
+                String query = sharedText;
+                if (Patterns.WEB_URL.matcher(sharedText).matches()) {
+                    query = "url:" + query;
+                    flag = 1;
+                }
                 Log.d("MainActivity.java", "Shared Text:" + sharedText);
-                if (sharedText != null) {
-                    displayText.setText(sharedText);
+                if (!sharedText.equals("")) {
+                    urlSearch.executeSearch(query);
+                    if (flag==1)
+                        displayText.setText(sharedText);
+                    else
+                        displayText.setText("Not a URL:" + sharedText);
+                }
+                else {
+                    displayText.setText("Empty search");
                 }
 
             }
