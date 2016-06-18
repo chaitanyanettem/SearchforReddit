@@ -3,26 +3,41 @@ package chaitanya.im.searchforreddit;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
+import chaitanya.im.searchforreddit.DataModel.Child;
+import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
+import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView displayText;
-    TextView label;
+    static TextView label;
     final String baseURL = "https://www.reddit.com";
     UrlSearch urlSearch;
+    static List<RecyclerViewItem> resultList = new ArrayList<>();
+    static RecyclerView rvResults;
+    static ResultsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        rvResults = (RecyclerView) findViewById(R.id.result_view);
+        adapter = new ResultsAdapter(resultList);
+        rvResults.setAdapter(adapter);
+        rvResults.setLayoutManager(new LinearLayoutManager(this));
 
         setTitle("Nautilus");
         displayText = (TextView) findViewById(R.id.shared_content);
@@ -86,6 +101,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    public static void updateDialog(Result result) {
+
+        RecyclerViewItem temp;
+        resultList.clear();
+        for (Child c:
+                result.getData().getChildren()) {
+            temp = new RecyclerViewItem();
+            temp.setTitle(c.getData().getTitle());
+            resultList.add(temp);
+        }
+
+        if (result.getData().getChildren()!=null)
+            label.setText("Number of results:" + result.getData().getChildren().size());
+        else
+            label.setText("No Results found");
+        adapter.notifyDataSetChanged();
     }
 
 }

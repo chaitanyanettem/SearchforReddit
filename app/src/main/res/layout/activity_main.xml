@@ -24,7 +24,7 @@
         android:layout_below="@+id/shared_content"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/result_item"
+        android:id="@+id/result_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

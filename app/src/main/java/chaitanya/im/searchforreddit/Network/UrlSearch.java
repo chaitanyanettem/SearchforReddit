@@ -1,11 +1,20 @@
 package chaitanya.im.searchforreddit.Network;
 
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import chaitanya.im.searchforreddit.DataModel.Child;
+import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
+import chaitanya.im.searchforreddit.MainActivity;
 import chaitanya.im.searchforreddit.R;
+import chaitanya.im.searchforreddit.ResultsAdapter;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -45,7 +54,7 @@ public class UrlSearch {
                 result = response.body();
                 if (result != null) {
                     Log.d("UrlSearch.java", result.getKind());
-                    updateDialog();
+                    MainActivity.updateDialog(result);
                 }
                 Log.d("UrlSearch.java", Integer.toString(statusCode));
             }
@@ -57,10 +66,4 @@ public class UrlSearch {
         });
     }
 
-    void updateDialog() {
-        if (result.getData().getChildren()!=null)
-            label.setText("children size:" + result.getData().getChildren().size());
-        else
-            label.setText("No Results found");
-    }
 }
