@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Search for Reddit</string>
+    <string name="in_string">" in "</string>
 </resources>
