@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import chaitanya.im.searchforreddit.DataModel.Child;
+import chaitanya.im.searchforreddit.DataModel.Data_;
 import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         rvResults = (RecyclerView) findViewById(R.id.result_view);
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         rvResults.setLayoutManager(new LinearLayoutManager(this));
         rvResults.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-        setTitle("Nautilus");
         displayText = (TextView) findViewById(R.id.shared_content);
         label = (TextView) findViewById(R.id.label);
         urlSearch = new UrlSearch(baseURL, this);
@@ -108,10 +110,17 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerViewItem temp;
         resultList.clear();
+        Data_ d;
         for (Child c:
                 result.getData().getChildren()) {
+
+            d = c.getData();
             temp = new RecyclerViewItem();
-            temp.setTitle(c.getData().getTitle());
+            temp.setTitle(d.getTitle());
+            temp.setSubreddit("r/" + d.getSubreddit());
+            temp.setAuthor("u/" + d.getAuthor());
+            temp.setNumComments(d.getNumComments());
+            temp.setScore(d.getScore());
             resultList.add(temp);
         }
 

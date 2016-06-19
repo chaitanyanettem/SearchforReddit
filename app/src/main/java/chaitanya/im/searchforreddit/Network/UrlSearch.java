@@ -31,7 +31,6 @@ public class UrlSearch {
 
     public UrlSearch(String base_url, AppCompatActivity _activity) {
         activity = _activity;
-        label = (TextView) activity.findViewById(R.id.label);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -54,6 +53,7 @@ public class UrlSearch {
                 result = response.body();
                 if (result != null) {
                     Log.d("UrlSearch.java", result.getKind());
+                    Log.d("UrlSearch.java", Integer.toString(result.getData().getChildren().get(0).getData().getNumComments()));
                     MainActivity.updateDialog(result);
                 }
                 Log.d("UrlSearch.java", Integer.toString(statusCode));

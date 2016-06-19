@@ -2,6 +2,7 @@ package chaitanya.im.searchforreddit;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +23,14 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView titleTextView;
+        public TextView topTextView;
+        public TextView bottomTextView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(R.id.post_title);
+            topTextView = (TextView) itemView.findViewById(R.id.top_text_view);
+            bottomTextView = (TextView) itemView.findViewById(R.id.bottom_text_view);
         }
     }
 
@@ -34,7 +39,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
     public ResultsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
         View resultView = inflater.inflate(R.layout.result_card, parent, false);
 
         ViewHolder viewHolder = new ViewHolder(resultView);
@@ -45,9 +49,18 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ResultsAdapter.ViewHolder viewHolder, int position) {
         RecyclerViewItem result = resultList.get(position);
+        TextView title = viewHolder.titleTextView;
+        TextView top = viewHolder.topTextView;
+        TextView bottom = viewHolder.bottomTextView;
 
-        TextView textView = viewHolder.titleTextView;
-        textView.setText(result.getTitle());
+        String topText = "<font color=#42A5F5>" + result.getAuthor() +
+                "</font> in <font color=#E91E63>" + result.getSubreddit() +
+                "</font>";
+        String bottomText = "<font color=#FF9800>";
+
+        title.setText(result.getTitle());
+        top.setText(Html.fromHtml(topText));
+
     }
 
     //return count of items
