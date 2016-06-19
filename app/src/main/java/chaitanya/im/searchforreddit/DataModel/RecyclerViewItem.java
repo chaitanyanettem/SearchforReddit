@@ -7,12 +7,12 @@ public class RecyclerViewItem {
     private String domain;
     private String subreddit;
     private int score;
-    private long utc_time;
-    private int num_comments;
-    private String link_flair_text;
+    private long utcTime;
+    private int numComments;
+    private String linkFlairText;
     private int gilded;
     private boolean archived;
-    private boolean over_18;
+    private boolean over18;
 
     public String getPermalink() {
         return permalink;
@@ -62,28 +62,28 @@ public class RecyclerViewItem {
         this.score = score;
     }
 
-    public long getUtc_time() {
-        return utc_time;
+    public long getUtcTime() {
+        return utcTime;
     }
 
-    public void setUtc_time(long utc_time) {
-        this.utc_time = utc_time;
+    public void setUtcTime(long utcTime) {
+        this.utcTime = utcTime;
     }
 
-    public int getNum_comments() {
-        return num_comments;
+    public int getNumComments() {
+        return numComments;
     }
 
-    public void setNum_comments(int num_comments) {
-        this.num_comments = num_comments;
+    public void setNumComments(int numComments) {
+        this.numComments = numComments;
     }
 
-    public String getLink_flair_text() {
-        return link_flair_text;
+    public String getLinkFlairText() {
+        return linkFlairText;
     }
 
-    public void setLink_flair_text(String link_flair_text) {
-        this.link_flair_text = link_flair_text;
+    public void setLinkFlairText(String linkFlairText) {
+        this.linkFlairText = linkFlairText;
     }
 
     public int getGilded() {
@@ -102,12 +102,12 @@ public class RecyclerViewItem {
         this.archived = archived;
     }
 
-    public boolean isOver_18() {
-        return over_18;
+    public boolean isOver18() {
+        return over18;
     }
 
-    public void setOver_18(boolean over_18) {
-        this.over_18 = over_18;
+    public void setOver18(boolean over18) {
+        this.over18 = over18;
     }
 
     public boolean isLocked() {

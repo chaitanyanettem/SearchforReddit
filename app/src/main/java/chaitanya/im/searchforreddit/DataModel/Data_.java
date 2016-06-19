@@ -1,59 +1,88 @@
 package chaitanya.im.searchforreddit.DataModel;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Data_ {
     private String domain;
+    @SerializedName("banned_by")
     private Object bannedBy;
+    @SerializedName("media_embed")
     private MediaEmbed mediaEmbed;
     private String subreddit;
+    @SerializedName("selftext_html")
     private Object selftextHtml;
     private String selftext;
     private Object likes;
+    @SerializedName("suggested_sort")
     private Object suggestedSort;
+    @SerializedName("user_reports")
     private List<Object> userReports = new ArrayList<Object>();
+    @SerializedName("secure_media")
     private Media secureMedia;
+    @SerializedName("link_flair_text")
     private Object linkFlairText;
     private String id;
+    @SerializedName("from_kind")
     private Object fromKind;
     private Integer gilded;
     private Boolean archived;
     private Boolean clicked;
+    @SerializedName("report_reasons")
     private Object reportReasons;
     private String author;
     private Media media;
     private Integer score;
+    @SerializedName("approved_by")
     private Object approvedBy;
+    @SerializedName("over_18")
     private Boolean over18;
     private Boolean hidden;
+    @SerializedName("num_comments")
     private Integer numComments;
+
     private String thumbnail;
+    @SerializedName("subreddit_id")
     private String subredditId;
+    @SerializedName("hide_score")
     private Boolean hideScore;
     private Boolean edited;
+    @SerializedName("link_flair_css_class")
     private Object linkFlairCssClass;
     private Object authorFlairCssClass;
     private Integer downs;
+    @SerializedName("secure_media_embed")
     private MediaEmbed secureMediaEmbed;
     private Boolean saved;
+    @SerializedName("removal_reason")
     private Object removalReason;
+    @SerializedName("post_hint")
+    private String postHint;
     private Boolean stickied;
     private Object from;
+    @SerializedName("is_self")
     private Boolean isSelf;
+    @SerializedName("from_id")
     private Object fromId;
     private String permalink;
     private Boolean locked;
     private String name;
     private Double created;
     private String url;
+    @SerializedName("author_flair_text")
     private Object authorFlairText;
     private Boolean quarantine;
     private String title;
+    @SerializedName("createdUtc")
     private Double createdUtc;
     private Object distinguished;
+    @SerializedName("mod_reports")
     private List<Object> modReports = new ArrayList<Object>();
     private Boolean visited;
+    @SerializedName("num_reports")
     private Object numReports;
     private Integer ups;
 
@@ -471,5 +500,13 @@ public class Data_ {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public String getPostHint() {
+        return postHint;
+    }
+
+    public void setPostHint(String postHint) {
+        this.postHint = postHint;
     }
 }

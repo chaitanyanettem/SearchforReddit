@@ -1,18 +1,28 @@
 package chaitanya.im.searchforreddit.DataModel;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Oembed_ {
+
+    @SerializedName("provider_url")
     private String providerUrl;
     private String title;
     private String html;
+    @SerializedName("thumbnail_width")
     private Integer thumbnailWidth;
     private Integer height;
     private Integer width;
     private String version;
+    @SerializedName("author_name")
     private String authorName;
+    @SerializedName("provider_name")
     private String providerName;
+    @SerializedName("thumbnail_url")
     private String thumbnailUrl;
     private String type;
+    @SerializedName("thumbnail_height")
     private Integer thumbnailHeight;
+    @SerializedName("author_url")
     private String authorUrl;
 
     public String getProviderUrl() {
