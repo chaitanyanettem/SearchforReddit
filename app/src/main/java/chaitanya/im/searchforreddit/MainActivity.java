@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ResultsAdapter(resultList);
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
+        rvResults.addItemDecoration(new SimpleDividerItemDecoration(this));
 
         setTitle("Nautilus");
         displayText = (TextView) findViewById(R.id.shared_content);
