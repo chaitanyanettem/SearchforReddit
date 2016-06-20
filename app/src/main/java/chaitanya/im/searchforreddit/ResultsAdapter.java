@@ -1,6 +1,7 @@
 package chaitanya.im.searchforreddit;
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -16,12 +17,14 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHolder> {
 
     private List<RecyclerViewItem> resultList;
+    private static AppCompatActivity context;
 
-    public ResultsAdapter(List<RecyclerViewItem> results) {
+    public ResultsAdapter(List<RecyclerViewItem> results, AppCompatActivity context) {
         resultList = results;
+        this.context = context;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView titleTextView;
         public TextView topTextView;
         public TextView bottomTextView;
@@ -31,6 +34,13 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
             titleTextView = (TextView) itemView.findViewById(R.id.post_title);
             topTextView = (TextView) itemView.findViewById(R.id.top_text_view);
             bottomTextView = (TextView) itemView.findViewById(R.id.bottom_text_view);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getLayoutPosition(); // gets item position
+            MainActivity.resultClicked(position, context);
         }
     }
 
@@ -52,15 +62,23 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         TextView title = viewHolder.titleTextView;
         TextView top = viewHolder.topTextView;
         TextView bottom = viewHolder.bottomTextView;
+        String point = "point";
+        String comment = "comment";
 
         String topText = "<font color=#42A5F5>" + result.getAuthor() +
                 "</font> in <font color=#E91E63>" + result.getSubreddit() +
                 "</font>";
-        String bottomText = "<font color=#FF9800>";
+        if (result.getScore() > 1)
+            point = "points";
+        if (result.getNumComments() > 1)
+            comment = "comments";
+
+        String bottomText = "<font color=#FF9800>" + result.getScore() + " " +
+                point + "</font> |&nbsp;" + result.getNumComments() + " " + comment;
 
         title.setText(result.getTitle());
         top.setText(Html.fromHtml(topText));
-
+        bottom.setText(Html.fromHtml(bottomText));
     }
 
     //return count of items
