@@ -32,8 +32,7 @@
         android:layout_marginTop="5dp"
         android:layout_below="@+id/label"
         android:background="@color/lightGray"
-        android:id="@+id/ruler"
-        android:visibility="gone"/>
+        android:id="@+id/ruler"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
