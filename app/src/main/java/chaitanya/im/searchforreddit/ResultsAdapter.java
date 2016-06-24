@@ -68,13 +68,14 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         String topText = "<font color=#42A5F5>" + result.getAuthor() +
                 "</font> in <font color=#E91E63>" + result.getSubreddit() +
                 "</font>";
-        if (result.getScore() > 1)
+        if (result.getScore() != 1)
             point = "points";
-        if (result.getNumComments() > 1)
+        if (result.getNumComments() != 1)
             comment = "comments";
 
         String bottomText = "<font color=#FF9800>" + result.getScore() + " " +
-                point + "</font> |&nbsp;" + result.getNumComments() + " " + comment;
+                point + "</font> |&nbsp;" + result.getNumComments() + " " + comment +
+                " |&nbsp;" + result.getTimeString();
 
         title.setText(result.getTitle());
         top.setText(Html.fromHtml(topText));

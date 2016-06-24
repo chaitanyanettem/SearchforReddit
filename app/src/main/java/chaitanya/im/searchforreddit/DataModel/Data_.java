@@ -14,7 +14,7 @@ public class Data_ {
     private MediaEmbed mediaEmbed;
     private String subreddit;
     @SerializedName("selftext_html")
-    private Object selftextHtml;
+    private String selftextHtml;
     private String selftext;
     private Object likes;
     @SerializedName("suggested_sort")
@@ -49,7 +49,7 @@ public class Data_ {
     private String subredditId;
     @SerializedName("hide_score")
     private Boolean hideScore;
-    private Boolean edited;
+    private Object edited;
     @SerializedName("link_flair_css_class")
     private Object linkFlairCssClass;
     private Object authorFlairCssClass;
@@ -76,8 +76,8 @@ public class Data_ {
     private Object authorFlairText;
     private Boolean quarantine;
     private String title;
-    @SerializedName("createdUtc")
-    private Double createdUtc;
+    @SerializedName("created_utc")
+    private Long createdUtc;
     private Object distinguished;
     @SerializedName("mod_reports")
     private List<Object> modReports = new ArrayList<Object>();
@@ -126,11 +126,11 @@ public class Data_ {
         this.distinguished = distinguished;
     }
 
-    public Double getCreatedUtc() {
+    public Long getCreatedUtc() {
         return createdUtc;
     }
 
-    public void setCreatedUtc(Double createdUtc) {
+    public void setCreatedUtc(Long createdUtc) {
         this.createdUtc = createdUtc;
     }
 
@@ -278,11 +278,11 @@ public class Data_ {
         this.linkFlairCssClass = linkFlairCssClass;
     }
 
-    public Boolean getEdited() {
+    public Object getEdited() {
         return edited;
     }
 
-    public void setEdited(Boolean edited) {
+    public void setEdited(Object edited) {
         this.edited = edited;
     }
 
@@ -462,11 +462,11 @@ public class Data_ {
         this.selftext = selftext;
     }
 
-    public Object getSelftextHtml() {
+    public String getSelftextHtml() {
         return selftextHtml;
     }
 
-    public void setSelftextHtml(Object selftextHtml) {
+    public void setSelftextHtml(String selftextHtml) {
         this.selftextHtml = selftextHtml;
     }
 

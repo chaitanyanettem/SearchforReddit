@@ -15,6 +15,18 @@
         android:autoLink="web"
         android:id="@+id/shared_content"/>
 
+<!--
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="5dp"
+        android:autoLink="web"
+        android:layout_below="@+id/shared_content"
+        android:id="@+id/query"/>
+-->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

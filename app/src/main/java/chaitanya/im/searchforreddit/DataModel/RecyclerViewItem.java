@@ -6,6 +6,7 @@ public class RecyclerViewItem {
     private String author;
     private String domain;
     private String subreddit;
+    private String timeString;
     private int score;
     private long utcTime;
     private int numComments;
@@ -13,6 +14,7 @@ public class RecyclerViewItem {
     private int gilded;
     private boolean archived;
     private boolean over18;
+    private boolean locked;
 
     public String getPermalink() {
         return permalink;
@@ -118,5 +120,12 @@ public class RecyclerViewItem {
         this.locked = locked;
     }
 
-    private boolean locked;
+    public String getTimeString() {
+        return timeString;
+    }
+
+    public void setTimeString(String timeString) {
+        this.timeString = timeString;
+    }
+
 }

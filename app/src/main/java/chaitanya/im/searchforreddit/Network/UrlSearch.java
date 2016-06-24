@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.MainActivity;
 import okhttp3.OkHttpClient;
@@ -18,7 +20,6 @@ public class UrlSearch {
     RedditEndpointInterface endpoint;
     AppCompatActivity activity;
     Result result;
-    TextView label;
 
     public UrlSearch(String base_url, AppCompatActivity _activity) {
         activity = _activity;
@@ -43,17 +44,18 @@ public class UrlSearch {
                 int statusCode = response.code();
                 result = response.body();
                 if (result != null) {
-                    // ToDo: fix the null pointer error if no results are found.
-                    Log.d("UrlSearch.java", result.getKind());
-                    Log.d("UrlSearch.java", Integer.toString(result.getData().getChildren().get(0).getData().getNumComments()));
                     MainActivity.updateDialog(result);
                 }
-                Log.d("UrlSearch.java", Integer.toString(statusCode));
+                Log.d("UrlSearch.java", "executeSearch() - Status code - " +
+                        Integer.toString(statusCode));
             }
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
-                Log.e("UrlSearch.java", "Request failed.");
+                String logMsg = "executeSearch failed. Throwable is - " +
+                        t.toString() + "; URL was - " + call.request().url().toString();
+                FirebaseCrash.report(new Exception(logMsg));
+                Log.e("UrlSearch.java", logMsg);
             }
         });
     }
