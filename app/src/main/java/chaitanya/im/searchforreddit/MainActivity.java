@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView sharedText;
     static TextView label;
-    static TextView query;
+    //static TextView query;
     final String baseURL = "https://www.reddit.com";
     UrlSearch urlSearch;
     static List<RecyclerViewItem> resultList = new ArrayList<>();
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         sharedText = (TextView) findViewById(R.id.shared_content);
         label = (TextView) findViewById(R.id.label);
-        query = (TextView) findViewById(R.id.query);
+        //query = (TextView) findViewById(R.id.query);
         ruler = findViewById(R.id.ruler);
         urlSearch = new UrlSearch(baseURL, this);
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         assert(sharedText != null);
         assert(label != null);
         assert(ruler != null);
-        assert(query != null);
+        //assert(query != null);
         sharedText.setText("Share text/links from other apps");
 
         Intent intent = getIntent();
@@ -99,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
                     this.sharedText.setText("Shared Text - " + sharedText);
                     if (links.length > 0) {
                         Log.d("MainActivity.java", "receiveIntent() - link = " + links[0]);
-                        query.setVisibility(View.VISIBLE);
-                        query.setText(links[0]);
+                        //query.setVisibility(View.VISIBLE);
+                        //query.setText(links[0]);
                         urlSearch.executeSearch("url:" + links[0]);
                     }
                     else{
-                        query.setVisibility(View.GONE);
+                        //query.setVisibility(View.GONE);
                         urlSearch.executeSearch(sharedText);
                     }
                 }
