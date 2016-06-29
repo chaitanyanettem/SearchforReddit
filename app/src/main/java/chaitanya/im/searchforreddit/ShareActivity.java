@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,7 +22,7 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
-public class MainActivity extends AppCompatActivity {
+public class ShareActivity extends AppCompatActivity {
 
     TextView sharedText;
     static TextView label;
@@ -39,13 +38,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_share);
 
         //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
         rvResults = (RecyclerView) findViewById(R.id.result_view);
-        URL myUrl;
-        myUrl.getPath()
         adapter = new ResultsAdapter(resultList, this);
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         ruler = findViewById(R.id.ruler);
         urlSearch = new UrlSearch(baseURL, this);
 
-        Log.d("MainActivity.java", "onCreate");
+        Log.d("ShareActivity.java", "onCreate");
         assert(sharedText != null);
         assert(label != null);
         assert(ruler != null);
@@ -72,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ruler.setVisibility(View.INVISIBLE);
-        Log.d("MainActivity.java", "onResume");
+        Log.d("ShareActivity.java", "onResume");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d("MainActivity.java", "onNewIntent");
+        Log.d("ShareActivity.java", "onNewIntent");
         receiveIntent(intent);
     }
 
@@ -89,19 +86,19 @@ public class MainActivity extends AppCompatActivity {
         }
         String action = intent.getAction();
         intent.getFlags();
-        Log.d("MainActivity.java", "receiveIntent() toString - " + intent.toString());
+        Log.d("ShareActivity.java", "receiveIntent() toString - " + intent.toString());
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type!=null) {
             if ("text/plain".equals(type)) {
                 label.setVisibility(View.VISIBLE);
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                Log.d("MainActivity.java", "Shared Text:" + sharedText);
+                Log.d("ShareActivity.java", "Shared Text:" + sharedText);
                 if(!sharedText.equals("")) {
                     String[] links = extractLinks(sharedText);
                     this.sharedText.setText("Shared Text - " + sharedText);
                     if (links.length > 0) {
-                        Log.d("MainActivity.java", "receiveIntent() - link = " + links[0]);
+                        Log.d("ShareActivity.java", "receiveIntent() - link = " + links[0]);
                         //query.setVisibility(View.VISIBLE);
                         //query.setText(links[0]);
                         urlSearch.executeSearch("url:" + links[0]);
@@ -125,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         Matcher m = Patterns.WEB_URL.matcher(text);
         while (m.find()) {
             String url = m.group();
-            Log.d("MainActivity.java", "URL extracted: " + url);
+            Log.d("ShareActivity.java", "URL extracted: " + url);
             links.add(url);
         }
 

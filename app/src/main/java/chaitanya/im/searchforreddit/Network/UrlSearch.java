@@ -2,12 +2,11 @@ package chaitanya.im.searchforreddit.Network;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.firebase.crash.FirebaseCrash;
 
 import chaitanya.im.searchforreddit.DataModel.Result;
-import chaitanya.im.searchforreddit.MainActivity;
+import chaitanya.im.searchforreddit.ShareActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -44,7 +43,7 @@ public class UrlSearch {
                 int statusCode = response.code();
                 result = response.body();
                 if (result != null) {
-                    MainActivity.updateDialog(result);
+                    ShareActivity.updateDialog(result);
                 }
                 Log.d("UrlSearch.java", "executeSearch() - Status code - " +
                         Integer.toString(statusCode));

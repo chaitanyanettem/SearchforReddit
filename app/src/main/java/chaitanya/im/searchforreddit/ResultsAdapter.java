@@ -40,7 +40,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         @Override
         public void onClick(View view) {
             int position = getLayoutPosition(); // gets item position
-            MainActivity.resultClicked(position, context);
+            ShareActivity.resultClicked(position, context);
         }
     }
 
