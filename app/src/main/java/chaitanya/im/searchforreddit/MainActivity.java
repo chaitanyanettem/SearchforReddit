@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
         rvResults = (RecyclerView) findViewById(R.id.result_view);
+        URL myUrl;
+        myUrl.getPath()
         adapter = new ResultsAdapter(resultList, this);
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));

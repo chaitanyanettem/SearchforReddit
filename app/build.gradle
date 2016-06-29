@@ -6,10 +6,10 @@ android {
 
     defaultConfig {
         applicationId "chaitanya.im.searchforreddit"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 23
-        versionCode 2
-        versionName "0.8"
+        versionCode 3
+        versionName "0.81"
     }
 
     buildTypes {
