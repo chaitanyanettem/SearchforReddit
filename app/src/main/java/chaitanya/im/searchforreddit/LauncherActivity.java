@@ -55,6 +55,8 @@ public class LauncherActivity extends AppCompatActivity {
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
         rvResults.addItemDecoration(new SimpleDividerItemDecoration(this));
+        rvResults.setNestedScrollingEnabled(false);
+        rvResults.setRecyclerListener(recyclerListener);
         urlSearch = new UrlSearch(baseURL, this);
 
         // dp -> px : http://stackoverflow.com/a/9563438/1055475
@@ -82,6 +84,13 @@ public class LauncherActivity extends AppCompatActivity {
 
     }
 
+    RecyclerView.RecyclerListener recyclerListener = new RecyclerView.RecyclerListener() {
+        @Override
+        public void onViewRecycled(RecyclerView.ViewHolder holder) {
+            Log.d("LauncherActivity.java", Long.toString(holder.getItemId()));
+        }
+    };
+
     View.OnKeyListener onKeyListener = new View.OnKeyListener() {
         public boolean onKey(View v, int keycode, KeyEvent event) {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keycode == KeyEvent.KEYCODE_ENTER)) {
@@ -91,6 +100,8 @@ public class LauncherActivity extends AppCompatActivity {
             return false;
         }
     };
+
+
 
     public void initializeSearch(View view) {
         initializeSearch();
