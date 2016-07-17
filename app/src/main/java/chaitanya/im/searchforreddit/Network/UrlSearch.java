@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.firebase.crash.FirebaseCrash;
 
 import chaitanya.im.searchforreddit.DataModel.Result;
+import chaitanya.im.searchforreddit.LauncherActivity;
 import chaitanya.im.searchforreddit.ShareActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -35,7 +36,7 @@ public class UrlSearch {
         endpoint = retrofit.create(RedditEndpointInterface.class);
     }
 
-    public void executeSearch(String query){
+    public void executeSearch(String query, final int source){
         Call<Result> call = endpoint.getSearchResults(query);
         call.enqueue(new Callback<Result>() {
             @Override
@@ -43,7 +44,10 @@ public class UrlSearch {
                 int statusCode = response.code();
                 result = response.body();
                 if (result != null) {
-                    ShareActivity.updateDialog(result);
+                    if(source==0)
+                        ShareActivity.updateDialog(result);
+                    else
+                        LauncherActivity.updateDialog(result);
                 }
                 Log.d("UrlSearch.java", "executeSearch() - Status code - " +
                         Integer.toString(statusCode));

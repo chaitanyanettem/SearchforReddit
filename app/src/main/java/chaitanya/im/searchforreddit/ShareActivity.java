@@ -1,20 +1,17 @@
 package chaitanya.im.searchforreddit;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 import chaitanya.im.searchforreddit.DataModel.Child;
 import chaitanya.im.searchforreddit.DataModel.Data_;
@@ -95,38 +92,21 @@ public class ShareActivity extends AppCompatActivity {
                 String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
                 Log.d("ShareActivity.java", "Shared Text:" + sharedText);
                 if(!sharedText.equals("")) {
-                    String[] links = extractLinks(sharedText);
+                    String[] links = UtilMethods.extractLinks(sharedText);
                     this.sharedText.setText("Shared Text - " + sharedText);
                     if (links.length > 0) {
                         Log.d("ShareActivity.java", "receiveIntent() - link = " + links[0]);
-                        //query.setVisibility(View.VISIBLE);
-                        //query.setText(links[0]);
-                        urlSearch.executeSearch("url:" + links[0]);
+                        urlSearch.executeSearch("url:" + links[0], 0);
                     }
                     else{
-                        //query.setVisibility(View.GONE);
-                        urlSearch.executeSearch(sharedText);
+                        urlSearch.executeSearch(sharedText, 0);
                     }
                 }
                 else {
-                        this.sharedText.setText("Empty search");
+                    this.sharedText.setText("Empty search");
                 }
             }
-
         }
-    }
-
-
-    public static String[] extractLinks(String text) {
-        List<String> links = new ArrayList<>();
-        Matcher m = Patterns.WEB_URL.matcher(text);
-        while (m.find()) {
-            String url = m.group();
-            Log.d("ShareActivity.java", "URL extracted: " + url);
-            links.add(url);
-        }
-
-        return links.toArray(new String[links.size()]);
     }
 
     public static void updateDialog(Result result) {
@@ -145,7 +125,7 @@ public class ShareActivity extends AppCompatActivity {
             temp.setNumComments(d.getNumComments());
             temp.setScore(d.getScore());
             temp.setPermalink("http://m.reddit.com" + d.getPermalink());
-            temp.setTimeString(getTimeString(d.getCreatedUtc()));
+            temp.setTimeString(UtilMethods.getTimeString(d.getCreatedUtc()));
             resultList.add(temp);
         }
 
@@ -157,38 +137,4 @@ public class ShareActivity extends AppCompatActivity {
             label.setText("0 results found");
         adapter.notifyDataSetChanged();
     }
-
-    public static String getTimeString(long utcTime) {
-        // Inspired from https://gist.github.com/dmsherazi/5985a093076a8c4e7c38
-        long difference;
-        long unixTime = System.currentTimeMillis() / 1000L;  //get current time in seconds.
-        int j;
-        String[] periods = {"s", "m", "h", "day", "month", "year"};
-        double[] lengths = {60, 60, 24, 30, 12};
-        difference = unixTime - utcTime;
-        String tense = " ago";
-        for (j = 0; difference >= lengths[j] && j < lengths.length - 1; j++) {
-            difference /= lengths[j];
-        }
-
-        if (difference > 1)
-            if (j>2)
-                return difference + periods[j] + "s" + tense;
-
-        return difference + periods[j] + tense;
-    }
-
-    public static void resultClicked(int position, AppCompatActivity context) {
-
-        String url = resultList.get(position).getPermalink();
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(url));
-        Log.d("resultClicked()", url);
-
-        if (browserIntent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(browserIntent);
-        }
-
-    }
-
 }

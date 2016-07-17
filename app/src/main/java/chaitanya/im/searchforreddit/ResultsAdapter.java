@@ -16,7 +16,7 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 //basic adapter
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHolder> {
 
-    private List<RecyclerViewItem> resultList;
+    private static List<RecyclerViewItem> resultList;
     private static AppCompatActivity context;
 
     public ResultsAdapter(List<RecyclerViewItem> results, AppCompatActivity context) {
@@ -40,7 +40,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         @Override
         public void onClick(View view) {
             int position = getLayoutPosition(); // gets item position
-            ShareActivity.resultClicked(position, context);
+            String url = resultList.get(position).getPermalink();
+            UtilMethods.resultClicked(context, url);
         }
     }
 
