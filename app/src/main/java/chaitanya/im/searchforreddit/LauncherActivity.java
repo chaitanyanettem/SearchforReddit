@@ -1,7 +1,6 @@
 package chaitanya.im.searchforreddit;
 
 import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
@@ -15,7 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -46,8 +45,8 @@ public class LauncherActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // To allow for multiline EditText with imeOptions set to actionSearch
-        searchEditText.setHorizontallyScrolling(false);
-        searchEditText.setMaxLines(Integer.MAX_VALUE);
+//        searchEditText.setHorizontallyScrolling(false);
+//        searchEditText.setMaxLines(Integer.MAX_VALUE);
         searchEditText.setOnKeyListener(onKeyListener);
 
         rvResults = (RecyclerView) findViewById(R.id.result_view_launcher);
@@ -55,8 +54,7 @@ public class LauncherActivity extends AppCompatActivity {
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
         rvResults.addItemDecoration(new SimpleDividerItemDecoration(this));
-        rvResults.setNestedScrollingEnabled(false);
-        rvResults.setRecyclerListener(recyclerListener);
+        //rvResults.setRecyclerListener(recyclerListener);
         urlSearch = new UrlSearch(baseURL, this);
 
         // dp -> px : http://stackoverflow.com/a/9563438/1055475
@@ -70,17 +68,6 @@ public class LauncherActivity extends AppCompatActivity {
         else {
             findViewById(R.id.shadow).setVisibility(View.VISIBLE);
         }
-
-
-        /*
-        try {
-            Intent intent = AccountPicker.newChooseAccountIntent(null, null,
-                    new String[] { GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE }, false, null, null, null, null);
-            startActivityForResult(intent, REQUEST_CODE_EMAIL);
-        } catch (ActivityNotFoundException e) {
-            // TODO
-        }
-        */
 
     }
 
@@ -101,13 +88,12 @@ public class LauncherActivity extends AppCompatActivity {
         }
     };
 
-
-
     public void initializeSearch(View view) {
         initializeSearch();
     }
 
     public void initializeSearch() {
+        UtilMethods.hideKeyboard(this);
         String query = searchEditText.getText().toString();
         Toast.makeText(LauncherActivity.this, query, Toast.LENGTH_SHORT).show();
         if(!query.equals("")) {
