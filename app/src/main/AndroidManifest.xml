@@ -3,6 +3,7 @@
     package="chaitanya.im.searchforreddit">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:taskAffinity=""
-            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert">
+            android:theme="@style/shareDialog">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 

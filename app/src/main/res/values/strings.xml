@@ -2,9 +2,12 @@
     <string name="app_name">Search for Reddit</string>
     <string name="in_string">" in "</string>
     <string name="search_title">Enter your search</string>
+    <string name="action_filter">Filter my search</string>
+    <string name="action_sort">Sort results</string>
     <string name="search_hint">Enter query or URL</string>
     <string name="search">Search</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_licenses">Licenses</string>
+    <string name="comment">&#xf086;&#160;</string>
+    <string name="upvote">&#xf062;&#160;</string>
 </resources>

@@ -1,12 +1,16 @@
 package chaitanya.im.searchforreddit.Network;
 
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.firebase.crash.FirebaseCrash;
 
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.LauncherActivity;
+import chaitanya.im.searchforreddit.R;
 import chaitanya.im.searchforreddit.ShareActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -20,10 +24,16 @@ public class UrlSearch {
     RedditEndpointInterface endpoint;
     AppCompatActivity activity;
     Result result;
+    CoordinatorLayout coordinatorLayout;
+    TextView label;
+    final String HTTP_ERROR = "There was an issue with Reddit's server. Please try again. HTTP Error code - ";
+    final String PARSING_ERROR = "There was an issue with parsing the response from Reddit. The developer has been informed. Please try again.";
+    final String UNKNOWN_ISSUE = "There was an unknown issue. The developer has been informed. Please try again.";
 
-    public UrlSearch(String base_url, AppCompatActivity _activity) {
+    public UrlSearch(String base_url, AppCompatActivity _activity, final int caller) {
         activity = _activity;
-
+        coordinatorLayout = (CoordinatorLayout) activity.findViewById(R.id.launcher_coordinatorlayout);
+        label = (TextView) activity.findViewById(R.id.label);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -42,21 +52,48 @@ public class UrlSearch {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 int statusCode = response.code();
-                result = response.body();
-                if (result != null) {
-                    if(source==0)
-                        ShareActivity.updateDialog(result);
-                    else
-                        LauncherActivity.updateDialog(result);
-                }
                 Log.d("UrlSearch.java", "executeSearch() - Status code - " +
                         Integer.toString(statusCode));
+                if (response.isSuccessful()) {
+                    Log.d("UrlSearch.java", "Response successful");
+                    result = response.body();
+                    if (result != null) {
+                        Log.d("UrlSearch.java", "result!=null");
+                        if (source == 0) {
+                            Log.d("UrlSearch.java", "source = 0.");
+                            ShareActivity.updateDialog(result);
+                        }
+                        else
+                            LauncherActivity.updateDialog(result);
+                    }
+                    else {
+                        Log.d("UrlSearch.java", "result=null");
+                        if(source == 0) {
+                            label.setText(PARSING_ERROR);
+                        }
+                        else
+                            Snackbar.make(coordinatorLayout, PARSING_ERROR, Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                }
+                else {
+                    Log.d("UrlSearch.java", "Response unsuccessful");
+                    if(source == 0) {
+                        label.setText(HTTP_ERROR + statusCode);
+                    }
+                    else
+                        Snackbar.make(coordinatorLayout, HTTP_ERROR + statusCode, Snackbar.LENGTH_INDEFINITE).show();
+                }
             }
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
-                String logMsg = "executeSearch failed. Throwable is - " +
-                        t.toString() + "; URL was - " + call.request().url().toString();
+                String logMsg = "executeSearch failed. Throwable is - " + t.toString() +
+                        "; URL was - " + call.request().url().toString();
+                if(source == 0) {
+                    label.setText(UNKNOWN_ISSUE);
+                }
+                else
+                    Snackbar.make(coordinatorLayout, UNKNOWN_ISSUE, Snackbar.LENGTH_INDEFINITE).show();
                 FirebaseCrash.report(new Exception(logMsg));
                 Log.e("UrlSearch.java", logMsg);
             }

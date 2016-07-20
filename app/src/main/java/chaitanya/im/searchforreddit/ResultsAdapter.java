@@ -1,6 +1,7 @@
 package chaitanya.im.searchforreddit;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -18,10 +19,16 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
 
     private static List<RecyclerViewItem> resultList;
     private static AppCompatActivity context;
+    String point;
+    String comment;
+    Typeface fontawesome;
 
     public ResultsAdapter(List<RecyclerViewItem> results, AppCompatActivity context) {
         resultList = results;
         this.context = context;
+        comment = context.getString(R.string.comment);
+        point = context.getString(R.string.upvote);
+        fontawesome = Typeface.createFromAsset(context.getAssets(), "fontawesome-webfont.ttf");
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -63,21 +70,16 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         TextView title = viewHolder.titleTextView;
         TextView top = viewHolder.topTextView;
         TextView bottom = viewHolder.bottomTextView;
-        String point = "point";
-        String comment = "comment";
 
-        String topText = "<font color=#42A5F5>" + result.getAuthor() +
-                "</font> in <font color=#E91E63>" + result.getSubreddit() +
+        String topText = result.getAuthor() +
+                " in <font color=#E91E63>" + result.getSubreddit() +
                 "</font>";
-        if (result.getScore() != 1)
-            point = "points";
-        if (result.getNumComments() != 1)
-            comment = "comments";
 
-        String bottomText = "<font color=#FF9800>" + result.getScore() + " " +
-                point + "</font> |&nbsp;" + result.getNumComments() + " " + comment +
-                " |&nbsp;" + result.getTimeString();
+        String bottomText = comment + result.getNumComments() + "&nbsp;&nbsp;\u2022&nbsp;&nbsp;" +
+                result.getTimeString() + "&nbsp;&nbsp;\u2022&nbsp;" + "<font color=#FF9800> " +
+                point + result.getScore() + "</font>";
 
+        bottom.setTypeface(fontawesome);
         title.setText(result.getTitle());
         top.setText(Html.fromHtml(topText));
         bottom.setText(Html.fromHtml(bottomText));

@@ -16,6 +16,7 @@
 
     <style name="shareDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
+        <item name="android:background">#4CAF50</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">

@@ -1,44 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/material_grey_200"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="chaitanya.im.searchforreddit.LauncherActivity">
+    tools:context="chaitanya.im.searchforreddit.LauncherActivity"
+    android:id="@+id/launcher_coordinatorlayout"
+    android:background="@color/material_grey_200">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-    
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_shadow"
-        android:background="@drawable/toolbar_dropshadow"
-        android:visibility="gone"
-        android:id="@+id/shadow"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@android:color/transparent">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:cardElevation="2dp"
-        app:cardCornerRadius="2dp">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_shadow"
+            android:background="@drawable/toolbar_dropshadow"
+            android:visibility="gone"
+            android:id="@+id/shadow"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/colorPrimary"
             android:padding="5dp"
             android:id="@+id/search_box">
 
             <EditText
                 android:layout_width="0dp"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:imeOptions="actionSearch"
@@ -60,16 +64,12 @@
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
-
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:cardElevation="2dp"
-        app:cardCornerRadius="2dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_shadow"
+            android:background="@drawable/toolbar_dropshadow"
+            android:visibility="gone"
+            android:id="@+id/shadow2"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
@@ -77,10 +77,11 @@
             android:background="@color/colorPrimary"
             android:scrollbars="vertical"
             android:id="@+id/result_view_launcher"/>
-    </android.support.v7.widget.CardView>
-    <!--<TextView-->
-    <!--android:layout_width="419dp"-->
+        <!--<TextView-->
+        <!--android:layout_width="419dp"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:id="@+id/email"/>-->
 
-</LinearLayout>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

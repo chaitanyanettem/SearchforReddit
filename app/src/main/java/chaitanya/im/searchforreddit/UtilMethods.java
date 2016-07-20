@@ -1,7 +1,10 @@
 package chaitanya.im.searchforreddit;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,7 +19,6 @@ import java.util.regex.Matcher;
 import chaitanya.im.searchforreddit.DataModel.Child;
 import chaitanya.im.searchforreddit.DataModel.Data_;
 import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
-import chaitanya.im.searchforreddit.DataModel.Result;
 
 public final class UtilMethods {
 
@@ -25,19 +27,18 @@ public final class UtilMethods {
         long difference;
         long unixTime = System.currentTimeMillis() / 1000L;  //get current time in seconds.
         int j;
-        String[] periods = {"s", "m", "h", "day", "month", "year"};
-        double[] lengths = {60, 60, 24, 30, 12};
+        String[] periods = {"s", "m", "h", " day", " month", " year"};
+        double[] lengths = {60, 60, 24, 30, 12, 10};
         difference = unixTime - utcTime;
-        String tense = " ago";
-        for (j = 0; difference >= lengths[j] && j < lengths.length - 1; j++) {
+        for (j = 0; difference >= lengths[j] && j < lengths.length-1; j++) {
             difference /= lengths[j];
         }
 
         if (difference > 1)
             if (j > 2)
-                return difference + " " + periods[j] + "s" + tense;
+                return difference + periods[j] + "s";
 
-        return difference + periods[j] + tense;
+        return difference + periods[j];
     }
 
     public static void resultClicked(AppCompatActivity context, String url) {
@@ -73,4 +74,23 @@ public final class UtilMethods {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public static RecyclerViewItem buildRecyclerViewItemt(Child c) {
+        Data_ d = c.getData();
+        RecyclerViewItem temp = new RecyclerViewItem();
+        temp.setTitle(d.getTitle());
+        temp.setSubreddit("/r/" + d.getSubreddit());
+        temp.setAuthor("/u/" + d.getAuthor());
+        temp.setNumComments(d.getNumComments());
+        temp.setScore(d.getScore());
+        temp.setPermalink("http://m.reddit.com" + d.getPermalink());
+        temp.setTimeString(UtilMethods.getTimeString(d.getCreatedUtc()));
+        return temp;
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

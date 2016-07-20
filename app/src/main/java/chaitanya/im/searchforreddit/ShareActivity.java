@@ -1,6 +1,7 @@
 package chaitanya.im.searchforreddit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +22,7 @@ import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class ShareActivity extends AppCompatActivity {
 
-    TextView sharedText;
+    TextView sharedTextView;
     static TextView label;
     //static TextView query;
     final String baseURL = "https://www.reddit.com";
@@ -45,18 +46,17 @@ public class ShareActivity extends AppCompatActivity {
         rvResults.setLayoutManager(new LinearLayoutManager(this));
         rvResults.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-        sharedText = (TextView) findViewById(R.id.shared_content);
+        sharedTextView = (TextView) findViewById(R.id.shared_content);
         label = (TextView) findViewById(R.id.label);
         //query = (TextView) findViewById(R.id.query);
         ruler = findViewById(R.id.ruler);
-        urlSearch = new UrlSearch(baseURL, this);
+        urlSearch = new UrlSearch(baseURL, this, 0);
 
         Log.d("ShareActivity.java", "onCreate");
-        assert(sharedText != null);
+        assert(sharedTextView != null);
         assert(label != null);
         assert(ruler != null);
         //assert(query != null);
-        sharedText.setText("Share text/links from other apps");
 
         Intent intent = getIntent();
         receiveIntent(intent);
@@ -86,27 +86,32 @@ public class ShareActivity extends AppCompatActivity {
         Log.d("ShareActivity.java", "receiveIntent() toString - " + intent.toString());
         String type = intent.getType();
 
-        if (Intent.ACTION_SEND.equals(action) && type!=null) {
-            if ("text/plain".equals(type)) {
-                label.setVisibility(View.VISIBLE);
-                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                Log.d("ShareActivity.java", "Shared Text:" + sharedText);
-                if(!sharedText.equals("")) {
+        if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
+            label.setVisibility(View.VISIBLE);
+            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            Log.d("ShareActivity.java", "Shared Text:" + sharedText);
+            sharedTextView.setText("Shared Text - " + sharedText);
+            if (!sharedText.equals("")) {
+                sharedTextView.setText("Shared Text - " + sharedText);
+                if (UtilMethods.isNetworkAvailable(this)) {
                     String[] links = UtilMethods.extractLinks(sharedText);
-                    this.sharedText.setText("Shared Text - " + sharedText);
                     if (links.length > 0) {
                         Log.d("ShareActivity.java", "receiveIntent() - link = " + links[0]);
                         urlSearch.executeSearch("url:" + links[0], 0);
-                    }
-                    else{
+                    } else {
                         urlSearch.executeSearch(sharedText, 0);
                     }
                 }
                 else {
-                    this.sharedText.setText("Empty search");
+                    sharedTextView.setText("Oh noes! The internet can't be reached :(");
+                    label.setText("Please try again after getting connected :)");
                 }
             }
+            else {
+                this.sharedTextView.setText("Empty search");
+            }
         }
+
     }
 
     public static void updateDialog(Result result) {
@@ -116,21 +121,12 @@ public class ShareActivity extends AppCompatActivity {
         Data_ d;
         for (Child c:
                 result.getData().getChildren()) {
-
-            d = c.getData();
-            temp = new RecyclerViewItem();
-            temp.setTitle(d.getTitle());
-            temp.setSubreddit("r/" + d.getSubreddit());
-            temp.setAuthor("u/" + d.getAuthor());
-            temp.setNumComments(d.getNumComments());
-            temp.setScore(d.getScore());
-            temp.setPermalink("http://m.reddit.com" + d.getPermalink());
-            temp.setTimeString(UtilMethods.getTimeString(d.getCreatedUtc()));
+            temp = UtilMethods.buildRecyclerViewItemt(c);
             resultList.add(temp);
         }
 
-        if (result.getData().getChildren().size()!=0) {
-            label.setText("Number of results:" + result.getData().getChildren().size());
+        if (resultList.size()!=0) {
+            label.setText("Number of results:" + resultList.size());
             ruler.setVisibility(View.VISIBLE);
         }
         else
