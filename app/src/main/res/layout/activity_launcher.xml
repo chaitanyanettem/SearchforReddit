@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     tools:context="chaitanya.im.searchforreddit.LauncherActivity"
     android:id="@+id/launcher_coordinatorlayout"
-    android:background="@color/material_grey_200">
+    android:background="?attr/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +21,7 @@
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/toolbarColor"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
@@ -35,14 +36,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@color/colorPrimary"
-            android:padding="5dp"
+            android:background="?attr/searchBoxColor"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:id="@+id/search_box">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_weight="0"
+                android:layout_height="wrap_content"
+                android:src="@drawable/magnify"
+                android:layout_gravity="center_vertical"/>
 
             <EditText
                 android:layout_width="0dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginStart="7dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:imeOptions="actionSearch"
@@ -52,15 +63,71 @@
                 android:hint="@string/search_hint"
                 android:id="@+id/search_edit_text"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_weight="0"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:background="@color/blue_tint"
+            android:weightSum="3"
+            android:id="@+id/search_options">
+
+
+            <Button
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_gravity="center_vertical"
-                android:onClick="initializeSearch"
-                android:src="@drawable/magnify"
-                android:contentDescription="@string/search"
-                android:theme="@style/submit_button"/>
+                android:text="Relevance"
+                android:textSize="12sp"
+                android:textColor="@color/colorPrimary0"
+                android:drawableTop="@drawable/ic_sort_white"
+                android:contentDescription="@string/action_sort"
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/sort_button"
+                android:onClick="showPopup"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:text="All Time"
+                android:textSize="12sp"
+                android:textColor="@color/colorPrimary0"
+                android:drawableTop="@drawable/ic_history"
+                android:contentDescription="@string/action_time"
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/time_button"
+                android:onClick="showPopup"/>
+
+            <!--<Button-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:text="Active"-->
+                <!--android:textSize="10sp"-->
+                <!--android:textColor="@color/colorPrimary0"-->
+                <!--android:drawableTop="@drawable/ic_filter_white"-->
+                <!--android:contentDescription="@string/action_filter"-->
+                <!--style="?android:attr/borderlessButtonStyle"-->
+                <!--android:id="@+id/filter_button"-->
+                <!--/>-->
+
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:text="@string/search"
+                android:contentDescription="@string/search_description"
+                android:textColor="@color/colorPrimary0"
+                style="?android:attr/borderlessButtonStyle"
+                android:onClick="initializeSearch"/>
 
         </LinearLayout>
 
@@ -71,12 +138,16 @@
             android:visibility="gone"
             android:id="@+id/shadow2"/>
 
-        <android.support.v7.widget.RecyclerView
+        <android.support.v4.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:scrollbars="vertical"
-            android:id="@+id/result_view_launcher"/>
+            android:id="@+id/launcher_refresh">
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:id="@+id/result_view_launcher"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
         <!--<TextView-->
         <!--android:layout_width="419dp"-->
         <!--android:layout_height="wrap_content"-->

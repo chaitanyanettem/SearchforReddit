@@ -2,11 +2,16 @@ package chaitanya.im.searchforreddit.Network;
 
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.crash.FirebaseCrash;
+
+import java.util.Map;
 
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.LauncherActivity;
@@ -23,8 +28,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UrlSearch {
     RedditEndpointInterface endpoint;
     AppCompatActivity activity;
+    SwipeRefreshLayout launcherRefresh;
     Result result;
     CoordinatorLayout coordinatorLayout;
+    public Snackbar snackbar;
     TextView label;
     final String HTTP_ERROR = "There was an issue with Reddit's server. Please try again. HTTP Error code - ";
     final String PARSING_ERROR = "There was an issue with parsing the response from Reddit. The developer has been informed. Please try again.";
@@ -34,6 +41,7 @@ public class UrlSearch {
         activity = _activity;
         coordinatorLayout = (CoordinatorLayout) activity.findViewById(R.id.launcher_coordinatorlayout);
         label = (TextView) activity.findViewById(R.id.label);
+        launcherRefresh = (SwipeRefreshLayout) activity.findViewById(R.id.launcher_refresh);
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -46,7 +54,7 @@ public class UrlSearch {
         endpoint = retrofit.create(RedditEndpointInterface.class);
     }
 
-    public void executeSearch(String query, final int source){
+    public void executeSearch(Map<String, String> query, final int source){
         Call<Result> call = endpoint.getSearchResults(query);
         call.enqueue(new Callback<Result>() {
             @Override
@@ -71,8 +79,13 @@ public class UrlSearch {
                         if(source == 0) {
                             label.setText(PARSING_ERROR);
                         }
-                        else
-                            Snackbar.make(coordinatorLayout, PARSING_ERROR, Snackbar.LENGTH_INDEFINITE).show();
+                        else {
+                            launcherRefresh.setRefreshing(false);
+                            snackbar = Snackbar.make(coordinatorLayout, PARSING_ERROR, Snackbar.LENGTH_INDEFINITE);
+                            View snackbarView = snackbar.getView();
+                            snackbarView.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue_tint));
+                            snackbar.show();
+                        }
                     }
                 }
                 else {
@@ -80,8 +93,13 @@ public class UrlSearch {
                     if(source == 0) {
                         label.setText(HTTP_ERROR + statusCode);
                     }
-                    else
-                        Snackbar.make(coordinatorLayout, HTTP_ERROR + statusCode, Snackbar.LENGTH_INDEFINITE).show();
+                    else {
+                        snackbar = Snackbar.make(coordinatorLayout, HTTP_ERROR + statusCode, Snackbar.LENGTH_INDEFINITE);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue_tint));
+                        snackbar.show();
+                        launcherRefresh.setRefreshing(false);
+                    }
                 }
             }
 
@@ -92,8 +110,12 @@ public class UrlSearch {
                 if(source == 0) {
                     label.setText(UNKNOWN_ISSUE);
                 }
-                else
+                else {
                     Snackbar.make(coordinatorLayout, UNKNOWN_ISSUE, Snackbar.LENGTH_INDEFINITE).show();
+                    View snackbarView = snackbar.getView();
+                    snackbarView.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue_tint));
+                    launcherRefresh.setRefreshing(false);
+                }
                 FirebaseCrash.report(new Exception(logMsg));
                 Log.e("UrlSearch.java", logMsg);
             }

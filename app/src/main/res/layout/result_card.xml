@@ -21,7 +21,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
         android:textSize="16sp"
-        android:textColor="@color/material_light_black"
+        android:textColor="?attr/resultTitleColor"
         android:id="@+id/post_title"/>
 
     <TextView

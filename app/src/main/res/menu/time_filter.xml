@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/time_24"
+        android:orderInCategory="2"
+        android:title="@string/time_24"/>
+
+    <item android:id="@+id/time_week"
+        android:orderInCategory="3"
+        android:title="@string/time_week"/>
+
+    <item android:id="@+id/time_month"
+        android:orderInCategory="4"
+        android:title="@string/time_month"/>
+
+    <item android:id="@+id/time_year"
+        android:orderInCategory="5"
+        android:title="@string/time_year"/>
+
+    <item android:id="@+id/time_all"
+        android:orderInCategory="6"
+        android:title="@string/time_all"/>
+
+</menu>

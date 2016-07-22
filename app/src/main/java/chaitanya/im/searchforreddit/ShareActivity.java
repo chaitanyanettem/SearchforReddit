@@ -1,6 +1,8 @@
 package chaitanya.im.searchforreddit;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +14,9 @@ import android.view.Window;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import chaitanya.im.searchforreddit.DataModel.Child;
 import chaitanya.im.searchforreddit.DataModel.Data_;
@@ -22,15 +26,20 @@ import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class ShareActivity extends AppCompatActivity {
 
+    final String baseURL = "https://www.reddit.com";
+
+    private SharedPreferences sharedPref;
+    private int theme;
+
     TextView sharedTextView;
     static TextView label;
-    //static TextView query;
-    final String baseURL = "https://www.reddit.com";
+    static RecyclerView rvResults;
+    static View ruler;
+
     UrlSearch urlSearch;
     static List<RecyclerViewItem> resultList = new ArrayList<>();
-    static RecyclerView rvResults;
     static ResultsAdapter adapter;
-    static View ruler;
+    Map<String, String> finalQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +53,8 @@ public class ShareActivity extends AppCompatActivity {
         adapter = new ResultsAdapter(resultList, this);
         rvResults.setAdapter(adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
-        rvResults.addItemDecoration(new SimpleDividerItemDecoration(this));
+        rvResults.addItemDecoration(new SimpleDividerItemDecoration(this, theme));
+        finalQuery = new HashMap<>();
 
         sharedTextView = (TextView) findViewById(R.id.shared_content);
         label = (TextView) findViewById(R.id.label);
@@ -87,7 +97,6 @@ public class ShareActivity extends AppCompatActivity {
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
-            label.setVisibility(View.VISIBLE);
             String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
             Log.d("ShareActivity.java", "Shared Text:" + sharedText);
             sharedTextView.setText("Shared Text - " + sharedText);
@@ -97,14 +106,15 @@ public class ShareActivity extends AppCompatActivity {
                     String[] links = UtilMethods.extractLinks(sharedText);
                     if (links.length > 0) {
                         Log.d("ShareActivity.java", "receiveIntent() - link = " + links[0]);
-                        urlSearch.executeSearch("url:" + links[0], 0);
+                        updateFinalQuery("url:" + links[0]);
+
                     } else {
-                        urlSearch.executeSearch(sharedText, 0);
+                        updateFinalQuery(sharedText);
                     }
+                    urlSearch.executeSearch(finalQuery, 0);
                 }
                 else {
                     sharedTextView.setText("Oh noes! The internet can't be reached :(");
-                    label.setText("Please try again after getting connected :)");
                 }
             }
             else {
@@ -112,6 +122,13 @@ public class ShareActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    void updateFinalQuery(String q){
+        finalQuery.clear();
+        finalQuery.put("t","");
+        finalQuery.put("sort", "");
+        finalQuery.put("q", q);
     }
 
     public static void updateDialog(Result result) {
@@ -131,6 +148,7 @@ public class ShareActivity extends AppCompatActivity {
         }
         else
             label.setText("0 results found");
+        label.setVisibility(View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
 }

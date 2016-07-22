@@ -3,6 +3,7 @@ package chaitanya.im.searchforreddit;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -21,6 +22,9 @@ import chaitanya.im.searchforreddit.DataModel.Data_;
 import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 
 public final class UtilMethods {
+
+    public final static int THEME_DEFAULT = 0;
+    public final static int THEME_BLACK = 1;
 
     public static String getTimeString(long utcTime) {
         // Inspired from https://gist.github.com/dmsherazi/5985a093076a8c4e7c38
@@ -41,14 +45,14 @@ public final class UtilMethods {
         return difference + periods[j];
     }
 
-    public static void resultClicked(AppCompatActivity context, String url) {
+    public static void resultClicked(AppCompatActivity activity, String url) {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(url));
         Log.d("resultClicked()", url);
 
-        if (browserIntent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(browserIntent);
+        if (browserIntent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivity(browserIntent);
         }
     }
 
@@ -63,7 +67,7 @@ public final class UtilMethods {
         return links.toArray(new String[links.size()]);
     }
 
-    public static void hideKeyboard(Activity activity) {
+    public static void hideKeyboard(AppCompatActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
@@ -92,5 +96,27 @@ public final class UtilMethods {
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public static void onActivityCreateSetTheme(AppCompatActivity activity, int savedThemePreference)
+    {
+        int defaultValue = 0;
+        switch (savedThemePreference)
+        {
+            default:
+            case THEME_DEFAULT:
+                activity.setTheme(R.style.AppTheme);
+                break;
+            case THEME_BLACK:
+                activity.setTheme(R.style.AppThemeDark);
+                break;
+        }
+    }
+
+    public static void changeToTheme(Activity activity, int theme, SharedPreferences sharedPref) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(activity.getString(R.string.style_pref_key), theme);
+        editor.commit();
+        activity.recreate();
     }
 }

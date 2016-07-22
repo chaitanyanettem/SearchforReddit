@@ -10,8 +10,11 @@ import android.view.View;
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration{
     private Drawable divider;
 
-    public SimpleDividerItemDecoration(Context context) {
-        divider = ContextCompat.getDrawable(context,R.drawable.line_divider);
+    public SimpleDividerItemDecoration(Context context, int dividerColor) {
+        if (dividerColor == 0)
+            divider = ContextCompat.getDrawable(context,R.drawable.line_divider_light);
+        else
+            divider = ContextCompat.getDrawable(context,R.drawable.line_divider_dark);
     }
 
     /**

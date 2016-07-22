@@ -3,20 +3,55 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary0</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark0</item>
+        <item name="colorAccent">@color/colorAccent0</item>
+        <item name="android:textColor">@color/material_grey_900_m</item>
+        <item name="android:textColorPrimary">@color/material_grey_900_m</item>
+
+        <item name="searchBoxColor">@color/colorPrimary0</item>
+        <item name="resultTitleColor">@color/colorPrimary1</item>
+        <item name="licenseBoxColor">@color/material_grey_200</item>
+        <item name="toolbarColor">@color/colorPrimary0</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
+        <!--<item name="android:colorEdgeEffect">@color/material_orange_500</item>-->
+        <item name="colorPrimary">@color/colorPrimary1</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark1</item>
+        <item name="colorAccent">@color/colorAccent0</item>
+        <item name="android:textColor">@color/material_grey_100_m</item>
+        <item name="android:textColorPrimary">@color/material_grey_100_m</item>
+        <item name="android:itemTextAppearance">@color/material_grey_100_m</item>
+        <item name="android:itemBackground">@color/material_grey_700</item>
+
+        <item name="searchBoxColor">@color/material_grey_800_m</item>
+        <item name="resultTitleColor">@color/colorPrimary0</item>
+        <item name="licenseBoxColor">@color/material_grey_700</item>
+        <item name="toolbarColor">@color/colorPrimary1</item>
     </style>
 
     <style name="submit_button" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">@color/indigo</item>
         <item name="colorButtonNormal">@color/pink</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimary0</item>
     </style>
 
     <style name="shareDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:background">#4CAF50</item>
+
+        <item name="searchBoxColor">@color/colorPrimary0</item>
+        <item name="resultTitleColor">@color/colorPrimary1</item>
+        <item name="licenseBoxColor">@color/material_grey_200</item>
+        <item name="toolbarColor">@color/colorPrimary0</item>
+    </style>
+    <style name="shareDialogDark" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="searchBoxColor">@color/material_grey_800_m</item>
+        <item name="resultTitleColor">@color/colorPrimary0</item>
+        <item name="licenseBoxColor">@color/material_grey_700</item>
+        <item name="toolbarColor">@color/colorPrimaryDark1</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.ActionBar">

@@ -2,6 +2,7 @@ package chaitanya.im.searchforreddit;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -58,7 +59,6 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View resultView = inflater.inflate(R.layout.result_card, parent, false);
-
         ViewHolder viewHolder = new ViewHolder(resultView);
         return viewHolder;
     }
