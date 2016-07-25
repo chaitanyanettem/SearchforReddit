@@ -13,6 +13,7 @@
         <item name="resultTitleColor">@color/colorPrimary1</item>
         <item name="licenseBoxColor">@color/material_grey_200</item>
         <item name="toolbarColor">@color/colorPrimary0</item>
+        <item name="mainBackgroundColor">@color/material_grey_200</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
@@ -29,6 +30,7 @@
         <item name="resultTitleColor">@color/colorPrimary0</item>
         <item name="licenseBoxColor">@color/material_grey_700</item>
         <item name="toolbarColor">@color/colorPrimary1</item>
+        <item name="mainBackgroundColor">@color/colorPrimary1</item>
     </style>
 
     <style name="submit_button" parent="Theme.AppCompat.Light">

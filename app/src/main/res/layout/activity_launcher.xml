@@ -9,7 +9,7 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     tools:context="chaitanya.im.searchforreddit.LauncherActivity"
     android:id="@+id/launcher_coordinatorlayout"
-    android:background="?attr/colorPrimary">
+    android:background="?attr/mainBackgroundColor">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -148,6 +148,7 @@
                 android:scrollbars="vertical"
                 android:id="@+id/result_view_launcher"/>
         </android.support.v4.widget.SwipeRefreshLayout>
+
         <!--<TextView-->
         <!--android:layout_width="419dp"-->
         <!--android:layout_height="wrap_content"-->

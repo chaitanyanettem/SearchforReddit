@@ -1,5 +1,6 @@
 package chaitanya.im.searchforreddit.Network;
 
+import android.graphics.Typeface;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +43,7 @@ public class UrlSearch {
         coordinatorLayout = (CoordinatorLayout) activity.findViewById(R.id.launcher_coordinatorlayout);
         label = (TextView) activity.findViewById(R.id.label);
         launcherRefresh = (SwipeRefreshLayout) activity.findViewById(R.id.launcher_refresh);
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -107,16 +109,17 @@ public class UrlSearch {
             public void onFailure(Call<Result> call, Throwable t) {
                 String logMsg = "executeSearch failed. Throwable is - " + t.toString() +
                         "; URL was - " + call.request().url().toString();
+                FirebaseCrash.report(new Exception(logMsg));
                 if(source == 0) {
                     label.setText(UNKNOWN_ISSUE);
                 }
                 else {
-                    Snackbar.make(coordinatorLayout, UNKNOWN_ISSUE, Snackbar.LENGTH_INDEFINITE).show();
+                    snackbar = Snackbar.make(coordinatorLayout, UNKNOWN_ISSUE, Snackbar.LENGTH_INDEFINITE);
                     View snackbarView = snackbar.getView();
                     snackbarView.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue_tint));
+                    snackbar.show();
                     launcherRefresh.setRefreshing(false);
                 }
-                FirebaseCrash.report(new Exception(logMsg));
                 Log.e("UrlSearch.java", logMsg);
             }
         });

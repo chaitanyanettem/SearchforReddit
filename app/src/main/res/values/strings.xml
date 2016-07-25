@@ -5,6 +5,7 @@
     <string name="search_hint">Enter query or URL</string>
     <string name="search">Search</string>
     <string name="search_description">Submit the search request</string>
+    <string name="edit_search">Edit shared text and sort by time/votes etc.</string>
 
     <string name="action_sort">Sort results by relevance/upvotes/post time etc.</string>
     <string name="action_time">Restrict results by post time</string>
@@ -34,6 +35,11 @@
     <string name="license_okhttp">• OkHttp - Copyright 2016 Square, Inc.</string>
     <string name="license_gson">• google-gson - Copyright 2008 Google Inc.</string>
     <string name="license_under_apache">Apache License Version 2.0 -</string>
+    <string name="about_text">&lt;font color=&#35;2196F3&gt;Search for Reddit &lt;/font&gt; is made with &lt;font color=&#35;B71C1C&gt; &#xf004; &lt;/font&gt; in Bengaluru, India.&lt;br /&gt;</string>
+    <string name="about_copyright">&#xf1f9; Chaitanya Nettem chaitanya.im</string>
+
+    <string name="empty_search">Please enter something in the search box &#xf118;</string>
+    <string name="no_internet">Oh noes! The internet cannot be reached &#xf119;</string>
 
     <string name="preference_file_key">chaitanya.im.searchforreddit.preference_file_key</string>
     <string name="style_pref_key">0</string>

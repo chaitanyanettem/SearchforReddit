@@ -6,5 +6,6 @@
         <attr name="recyclerDivider" format="color" />
         <attr name="licenseBoxColor" format="color"/>
         <attr name="toolbarColor" format="color"/>
+        <attr name="mainBackgroundColor" format="color"/>
     </declare-styleable>
 </resources>

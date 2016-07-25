@@ -98,17 +98,23 @@ public final class UtilMethods {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static void onActivityCreateSetTheme(AppCompatActivity activity, int savedThemePreference)
+    public static void onActivityCreateSetTheme(AppCompatActivity activity, int savedThemePreference, int source)
     {
         int defaultValue = 0;
         switch (savedThemePreference)
         {
             default:
             case THEME_DEFAULT:
-                activity.setTheme(R.style.AppTheme);
+                if (source == 0)
+                    activity.setTheme(R.style.shareDialog);
+                else
+                    activity.setTheme(R.style.AppTheme);
                 break;
             case THEME_BLACK:
-                activity.setTheme(R.style.AppThemeDark);
+                if (source == 0)
+                    activity.setTheme(R.style.shareDialogDark);
+                else
+                    activity.setTheme(R.style.AppThemeDark);
                 break;
         }
     }

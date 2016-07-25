@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -44,9 +46,10 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
-public class LauncherActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class LauncherActivity extends AppCompatActivity{
 
     private static final String LICENSE_FLAG = "licenseFlag";
+    private static final String ABOUT_FLAG = "aboutFlag";
     private static final String SORT_BUTTON_LABEL = "sortButtonLabel";
     private static final String TIME_BUTTON_LABEL = "timeButtonLabel";
     private static final String TIME_VALUE = "timeValue";
@@ -54,35 +57,40 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
     private static final String SEARCH_OPTIONS_FLAG = "searchOptionsFlag";
     public static final String [] timeValues = {"day", "week", "month", "year", ""};
     public static final String [] sortValues = {"top", "new", "comments", ""};
-
     private static final int REQUEST_CODE_EMAIL = 1;
+    private static final int SOURCE = 1;
+
     private final String baseURL = "https://www.reddit.com";
     private boolean isChecked = false;
 
-    private String timeValue = timeValues[0];
-    private String sortValue = sortValues[0];
-    private int theme;
-    private int licenseFlag = 0;
+    private boolean licenseFlag = false;
     private boolean searchOptionsFlag = false;
-    Map<String,String> finalQuery;
+    private boolean aboutFlag = false;
     private String sortButtonLabel ="Relevance";
     private String timeButtonLabel ="All Time";
-
     private SharedPreferences sharedPref;
+
     private LinearLayout searchOptions;
     private EditText searchEditText;
     //private Button filterButton;
     private Button sortButton;
     private Button timeButton;
     private static SwipeRefreshLayout launcherRefresh;
-    private AlertDialog alertDialog;
+    private AlertDialog licenseDialog;
+    private AlertDialog aboutDialog;
     static RecyclerView rvResults;
-    private Snackbar snackbar;
-    private CoordinatorLayout coordinatorLayout;
+    private static Snackbar snackbar;
+    private static CoordinatorLayout coordinatorLayout;
 
+    static Context context;
     static List<RecyclerViewItem> resultList = new ArrayList<>();
     static ResultsAdapter adapter;
+    private String timeValue = timeValues[4];
+    private String sortValue = sortValues[3];
+    private int theme;
     private UrlSearch urlSearch;
+    Map<String,String> finalQuery;
+    Typeface fontAwesome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +100,17 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
         sharedPref = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
         theme = sharedPref.getInt(getString(R.string.style_pref_key), 0);
-        UtilMethods.onActivityCreateSetTheme(this, theme);
+        UtilMethods.onActivityCreateSetTheme(this, theme, SOURCE);
 
         setContentView(R.layout.activity_launcher);
 
+        context = this;
+        fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         LinearLayout searchBox = (LinearLayout) findViewById(R.id.search_box);
         searchOptions = (LinearLayout) findViewById(R.id.search_options);
         launcherRefresh = (SwipeRefreshLayout) findViewById(R.id.launcher_refresh);
-        launcherRefresh.setOnRefreshListener(this);
+        launcherRefresh.setOnRefreshListener(refreshListener);
         searchEditText = (EditText) findViewById(R.id.search_edit_text);
         //filterButton = (Button) findViewById(R.id.filter_button);
         sortButton = (Button) findViewById(R.id.sort_button);
@@ -152,28 +162,9 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
             searchOptions.setVisibility(View.VISIBLE);
             searchOptionsFlag = true;
         }
-    }
 
-    RecyclerView.RecyclerListener recyclerListener = new RecyclerView.RecyclerListener() {
-        @Override
-        public void onViewRecycled(RecyclerView.ViewHolder holder) {
-            Log.d("LauncherActivity.java", Long.toString(holder.getItemId()));
-        }
-    };
-
-    View.OnKeyListener onKeyListener = new View.OnKeyListener() {
-        public boolean onKey(View v, int keycode, KeyEvent event) {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keycode == KeyEvent.KEYCODE_ENTER)) {
-                initializeSearch();
-                return true;
-            }
-            return false;
-        }
-    };
-
-    public void onRefresh() {
-        Log.d("LauncherActivity.java", "onRefresh called");
-        initializeSearch();
+        Intent intent = getIntent();
+        receiveIntent(intent);
     }
 
     public void initializeSearch(View view) {
@@ -205,20 +196,37 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
                 urlSearch.executeSearch(finalQuery, 1);
             }
             else {
-                snackbar = Snackbar.make(coordinatorLayout, "Please enter something in the search box :)",
+                launcherRefresh.setRefreshing(false);
+                snackbar = Snackbar.make(coordinatorLayout, getResources().getString(R.string.empty_search),
                         Snackbar.LENGTH_INDEFINITE);
                 View snackbarView = snackbar.getView();
+                TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTypeface(fontAwesome);
                 snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.blue_tint));
                 snackbar.show();
             }
         }
         else {
-            snackbar = Snackbar.make(coordinatorLayout, "Oh noes! The internet cannot be reached :(",
+            launcherRefresh.setRefreshing(false);
+            snackbar = Snackbar.make(coordinatorLayout, getResources().getString(R.string.no_internet),
                     Snackbar.LENGTH_INDEFINITE);
             View snackbarView = snackbar.getView();
+            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTypeface(fontAwesome);
             snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.blue_tint));
             snackbar.show();
         }
+    }
+
+    void receiveIntent(Intent intent) {
+        String sharedText = intent.getStringExtra(ShareActivity.EXTRA_SHARED_TEXT);
+        if (sharedText != null) {
+            searchEditText.setText(sharedText);
+            initializeSearch();
+            searchOptions.setVisibility(View.VISIBLE);
+            searchOptionsFlag = true;
+        }
+
     }
 
     void updateFinalQuery(String q){
@@ -227,6 +235,35 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
         finalQuery.put("sort", sortValue);
         finalQuery.put("q", q);
     }
+
+    public static void updateDialog(Result result) {
+        RecyclerViewItem temp;
+        resultList.clear();
+        for (Child c:
+                result.getData().getChildren()) {
+            temp = UtilMethods.buildRecyclerViewItemt(c);
+            resultList.add(temp);
+        }
+
+        if(resultList.size() == 0) {
+            snackbar = Snackbar.make(coordinatorLayout, "0 Search results", Snackbar.LENGTH_INDEFINITE);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(ContextCompat.getColor(context, R.color.blue_tint));
+            snackbar.show();
+        }
+        else
+            adapter.notifyDataSetChanged();
+        stopRefreshing();
+        rvResults.post(scrollToTop);
+    }
+
+    static Runnable scrollToTop = new Runnable() {
+        @Override
+        public void run() {
+            rvResults.smoothScrollToPosition(0);
+        }
+    };
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -268,6 +305,9 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
                 else
                     UtilMethods.changeToTheme(this, 0, sharedPref);
                 return true;
+            case R.id.action_about:
+                showAbout();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -275,21 +315,26 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt(LICENSE_FLAG, licenseFlag);
+        savedInstanceState.putBoolean(LICENSE_FLAG, licenseFlag);
+        savedInstanceState.putBoolean(ABOUT_FLAG, aboutFlag);
         savedInstanceState.putString(SORT_BUTTON_LABEL, sortButtonLabel);
         savedInstanceState.putString(TIME_BUTTON_LABEL, timeButtonLabel);
         savedInstanceState.putString(TIME_VALUE, timeValue);
         savedInstanceState.putString(SORT_VALUE, sortValue);
         savedInstanceState.putBoolean(SEARCH_OPTIONS_FLAG, searchOptionsFlag);
 
-        if (alertDialog!=null)
-            alertDialog.dismiss();
+        if (licenseDialog != null)
+            licenseDialog.dismiss();
+        if (aboutDialog != null)
+            aboutDialog.dismiss();
+
         super.onSaveInstanceState(savedInstanceState);
     }
 
     public void onRestoreInstanceState (Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        licenseFlag = savedInstanceState.getInt(LICENSE_FLAG);
+        licenseFlag = savedInstanceState.getBoolean(LICENSE_FLAG);
+        aboutFlag = savedInstanceState.getBoolean(ABOUT_FLAG);
         sortButtonLabel = savedInstanceState.getString(SORT_BUTTON_LABEL);
         timeButtonLabel = savedInstanceState.getString(TIME_BUTTON_LABEL);
         timeValue = savedInstanceState.getString(TIME_VALUE);
@@ -301,15 +346,29 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
         }
         timeButton.setText(timeButtonLabel);
         sortButton.setText(sortButtonLabel);
-        if (licenseFlag == 1)
+        if (licenseFlag)
             showLicenses();
+        if (aboutFlag)
+            showAbout();
     }
 
     @Override
     public void onBackPressed() {
-        searchEditText.setCursorVisible(false);
-        super.onBackPressed();
+        if(searchOptionsFlag) {
+            searchOptionsFlag = false;
+            searchOptions.setVisibility(View.GONE);
+        }
+        else {
+            super.onBackPressed();
+        }
     }
+
+    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        public void onRefresh() {
+            Log.d("LauncherActivity.java", "onRefresh called");
+            initializeSearch();
+        }
+    };
 
     EditText.OnClickListener searchEditTextClickListener = new EditText.OnClickListener() {
         @Override
@@ -334,7 +393,7 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
             Toast buttonDesc = Toast.makeText(LauncherActivity.this, v.getContentDescription(), Toast.LENGTH_SHORT);
             buttonDesc.setGravity(Gravity.CENTER_VERTICAL,0,0);
             buttonDesc.show();
-        return false;
+            return false;
         }
     };
 
@@ -351,42 +410,49 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
     DialogInterface.OnClickListener dialogOkListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            licenseFlag = 0;
-            alertDialog.dismiss();
+            if(licenseFlag) {
+                licenseFlag = false;
+                licenseDialog.dismiss();
+            }
+            else {
+                aboutFlag = false;
+                aboutDialog.dismiss();
+            }
         }
     };
 
     DialogInterface.OnCancelListener dialogCancelListener = new DialogInterface.OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialog) {
-            licenseFlag = 0;
-            alertDialog.dismiss();
+            if(licenseFlag) {
+                licenseFlag = false;
+                licenseDialog.dismiss();
+            }
+            else {
+                aboutFlag = false;
+                aboutDialog.dismiss();
+            }
         }
     };
-//
-//    <item android:id="@+id/time_hour"
-//    android:orderInCategory="1"
-//    android:title="@string/time_hour"/>
-//
-//    <item android:id="@+id/time_24"
-//    android:orderInCategory="2"
-//    android:title="@string/time_24"/>
-//
-//    <item android:id="@+id/time_week"
-//    android:orderInCategory="3"
-//    android:title="@string/time_week"/>
-//
-//    <item android:id="@+id/time_month"
-//    android:orderInCategory="4"
-//    android:title="@string/time_month"/>
-//
-//    <item android:id="@+id/time_year"
-//    android:orderInCategory="5"
-//    android:title="@string/time_year"/>
-//
-//    <item android:id="@+id/time_all"
-//    android:orderInCategory="6"
-//    android:title="@string/time_all"/>
+
+    RecyclerView.RecyclerListener recyclerListener = new RecyclerView.RecyclerListener() {
+        @Override
+        public void onViewRecycled(RecyclerView.ViewHolder holder) {
+            Log.d("LauncherActivity.java", Long.toString(holder.getItemId()));
+        }
+    };
+
+    View.OnKeyListener onKeyListener = new View.OnKeyListener() {
+        public boolean onKey(View v, int keycode, KeyEvent event) {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keycode == KeyEvent.KEYCODE_ENTER)) {
+                initializeSearch();
+                return true;
+            }
+            return false;
+        }
+    };
+
+
     PopupMenu.OnMenuItemClickListener timePopupListener = new PopupMenu.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
@@ -468,7 +534,7 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
     }
 
     void showLicenses() {
-        licenseFlag = 1;
+        licenseFlag = true;
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.license_dialog, coordinatorLayout, false);
@@ -478,20 +544,35 @@ public class LauncherActivity extends AppCompatActivity implements SwipeRefreshL
         dialogBuilder.setOnCancelListener(dialogCancelListener);
         TextView apache = (TextView) dialogView.findViewById(R.id.apache);
         apache.setText(LicenseText.apacheLicense);
-        alertDialog = dialogBuilder.create();
-        alertDialog.show();
+        licenseDialog = dialogBuilder.create();
+        licenseDialog.show();
     }
 
-    public static void updateDialog(Result result) {
-        RecyclerViewItem temp;
-        resultList.clear();
-        for (Child c:
-                result.getData().getChildren()) {
-            temp = UtilMethods.buildRecyclerViewItemt(c);
-            resultList.add(temp);
-        }
-        adapter.notifyDataSetChanged();
-        stopRefreshing();
+    void showAbout() {
+        aboutFlag = true;
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.about_dialog, coordinatorLayout, false);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setPositiveButton("OK",dialogOkListener);
+        dialogBuilder.setOnCancelListener(dialogCancelListener);
+
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
+        String versionText = "Version Code <font color=#FF6F00>" + versionCode + "</font><br/>" +
+                "Version Name <font color=#FF6F00>" + versionName + "</font><br/>";
+
+        TextView aboutText = (TextView) dialogView.findViewById(R.id.about_text);
+        TextView aboutVersion = (TextView) dialogView.findViewById(R.id.about_version);
+        TextView aboutCopyright = (TextView) dialogView.findViewById(R.id.about_copyright);
+        aboutText.setTypeface(fontAwesome);
+        aboutCopyright.setTypeface(fontAwesome);
+        aboutText.setText(Html.fromHtml(getResources().getString(R.string.about_text)));
+        aboutVersion.setText(Html.fromHtml(versionText));
+        aboutCopyright.setText(getResources().getString(R.string.about_copyright));
+
+        aboutDialog = dialogBuilder.create();
+        aboutDialog.show();
     }
 
     public static void stopRefreshing() {

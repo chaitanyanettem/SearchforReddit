@@ -4,14 +4,13 @@
 
     <item android:id="@+id/action_refresh"
         android:icon="@drawable/ic_refresh"
-        android:orderInCategory="98"
+        android:orderInCategory="97"
         android:title="@string/action_refresh"
         app:showAsAction="ifRoom"/>
 
-
     <item
         android:id="@+id/action_dark"
-        android:orderInCategory="100"
+        android:orderInCategory="98"
         android:title="@string/action_dark"
         android:checkable="true"
         app:showAsAction="never"/>
@@ -25,4 +24,5 @@
         android:orderInCategory="100"
         android:title="@string/action_about"
         app:showAsAction="never"/>
+
 </menu>
