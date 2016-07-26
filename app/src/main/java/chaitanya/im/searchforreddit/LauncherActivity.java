@@ -15,6 +15,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,10 @@ import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class LauncherActivity extends AppCompatActivity{
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private static final String LICENSE_FLAG = "licenseFlag";
     private static final String ABOUT_FLAG = "aboutFlag";

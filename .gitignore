@@ -7,4 +7,7 @@
 /build
 /captures
 /app/google-services.json
+
+# InAppPurchase related files
 /app/src/main/aidl
+/app/src/main/java/chaitanya/im/searchforreddit/InAppPurchaseFeatures
