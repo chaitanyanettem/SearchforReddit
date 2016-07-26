@@ -282,13 +282,13 @@ public class LauncherActivity extends AppCompatActivity{
         Log.d("LauncherActivity.java", "onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-        MenuItem actionDark = menu.findItem(R.id.action_dark);
-        if(theme != 0) {
-            actionDark.setChecked(true);
-            isChecked = true;
-            searchEditText.getText().clear();
-            menu.findItem(R.id.action_refresh).setIcon(R.drawable.ic_refresh_white);
-        }
+//        MenuItem actionDark = menu.findItem(R.id.action_dark);
+//        if(theme != 0) {
+//            actionDark.setChecked(true);
+//            isChecked = true;
+//            searchEditText.getText().clear();
+//            menu.findItem(R.id.action_refresh).setIcon(R.drawable.ic_refresh_white);
+//        }
         return true;
     }
 
@@ -302,14 +302,14 @@ public class LauncherActivity extends AppCompatActivity{
             case R.id.action_licenses:
                 showLicenses();
                 return true;
-            case R.id.action_dark:
-                isChecked = !(item.isChecked());
-                item.setChecked(isChecked);
-                if (isChecked)
-                    UtilMethods.changeToTheme(this, 1, sharedPref);
-                else
-                    UtilMethods.changeToTheme(this, 0, sharedPref);
-                return true;
+//            case R.id.action_dark:
+//                isChecked = !(item.isChecked());
+//                item.setChecked(isChecked);
+//                if (isChecked)
+//                    UtilMethods.changeToTheme(this, 1, sharedPref);
+//                else
+//                    UtilMethods.changeToTheme(this, 0, sharedPref);
+//                return true;
             case R.id.action_about:
                 showAbout();
                 return true;

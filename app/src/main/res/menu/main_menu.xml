@@ -8,12 +8,12 @@
         android:title="@string/action_refresh"
         app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/action_dark"
-        android:orderInCategory="98"
-        android:title="@string/action_dark"
-        android:checkable="true"
-        app:showAsAction="never"/>
+    <!--<item-->
+        <!--android:id="@+id/action_dark"-->
+        <!--android:orderInCategory="98"-->
+        <!--android:title="@string/action_dark"-->
+        <!--android:checkable="true"-->
+        <!--app:showAsAction="never"/>-->
 
     <item android:id="@+id/action_licenses"
         android:orderInCategory="99"
