@@ -1,13 +1,16 @@
 package chaitanya.im.searchforreddit;
 
 import android.accounts.AccountManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -37,6 +40,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.vending.billing.IInAppBillingService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,23 +52,26 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
-public class LauncherActivity extends AppCompatActivity{
+public class LauncherActivity extends AppCompatActivity {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    public static final String TAG = "LauncherActivity.java";
     private static final String LICENSE_FLAG = "licenseFlag";
     private static final String ABOUT_FLAG = "aboutFlag";
     private static final String SORT_BUTTON_LABEL = "sortButtonLabel";
     private static final String TIME_BUTTON_LABEL = "timeButtonLabel";
     private static final String TIME_VALUE = "timeValue";
     private static final String SORT_VALUE = "sortValue";
+    private static final int SOURCE = 1;
     private static final String SEARCH_OPTIONS_FLAG = "searchOptionsFlag";
+    private static final int REQUEST_CODE_EMAIL = 1;
+    private static final String SKU_DONATE = "donate";
+
     public static final String [] timeValues = {"day", "week", "month", "year", ""};
     public static final String [] sortValues = {"top", "new", "comments", ""};
-    private static final int REQUEST_CODE_EMAIL = 1;
-    private static final int SOURCE = 1;
 
     private final String baseURL = "https://www.reddit.com";
     private boolean isChecked = false;
@@ -86,6 +94,9 @@ public class LauncherActivity extends AppCompatActivity{
     static RecyclerView rvResults;
     private static Snackbar snackbar;
     private static CoordinatorLayout coordinatorLayout;
+
+    IInAppBillingService mService;
+    ServiceConnection mServiceConn;
 
     static Context context;
     static List<RecyclerViewItem> resultList = new ArrayList<>();
@@ -124,6 +135,25 @@ public class LauncherActivity extends AppCompatActivity{
         finalQuery = new HashMap<>();
         setSupportActionBar(toolbar);
 
+        mServiceConn = new ServiceConnection() {
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                mService = null;
+            }
+
+            @Override
+            public void onServiceConnected(ComponentName name,
+                                           IBinder service) {
+                mService = IInAppBillingService.Stub.asInterface(service);
+            }
+        };
+
+        //ComponentName myService = startService(new Intent(this, LauncherActivity.class));
+        Intent serviceIntent =
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+
 
         // To allow for multiline EditText with imeOptions set to actionSearch
 //        searchEditText.setHorizontallyScrolling(false);
@@ -159,17 +189,25 @@ public class LauncherActivity extends AppCompatActivity{
             findViewById(R.id.shadow).setVisibility(View.VISIBLE);
             findViewById(R.id.shadow2).setVisibility(View.VISIBLE);
         }
-        Log.d("LauncherActivity.java", "OnCreate");
-        Log.d("LauncherActivity.java", "searchEditText - " + searchEditText.getText().toString());
+        Log.d(TAG, "OnCreate");
+        Log.d(TAG, "searchEditText - " + searchEditText.getText().toString());
         // TODO - fix this:
         if(!searchEditText.getText().toString().equals("")) {
-            Log.d("LauncherActivity.java", "OnCreate, visibility");
+            Log.d(TAG, "OnCreate, visibility");
             searchOptions.setVisibility(View.VISIBLE);
             searchOptionsFlag = true;
         }
 
         Intent intent = getIntent();
         receiveIntent(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mService != null) {
+            unbindService(mServiceConn);
+        }
     }
 
     public void initializeSearch(View view) {
@@ -185,7 +223,7 @@ public class LauncherActivity extends AppCompatActivity{
             urlSearch.snackbar.dismiss();
         }
         String query = searchEditText.getText().toString();
-        Log.d("LauncherActivity.java", "query - " + query);
+        Log.d(TAG, "query - " + query);
         if (UtilMethods.isNetworkAvailable(this)) {
             if (!query.equals("")) {
                 launcherRefresh.setRefreshing(true);
@@ -193,8 +231,12 @@ public class LauncherActivity extends AppCompatActivity{
                 searchOptionsFlag = false;
                 String[] links = UtilMethods.extractLinks(query);
                 if (links.length > 0) {
-                    Log.d("ShareActivity.java", "receiveIntent() - link = " + links[0]);
-                    updateFinalQuery("url:" + links[0]);
+                    Log.d(TAG, "receiveIntent() - link = " + links[0]);
+                    String youtubeID = UtilMethods.extractYoutubeID(links[0]);
+                    if (youtubeID != null)
+                        updateFinalQuery("url:" + youtubeID);
+                    else
+                        updateFinalQuery("url:" + links[0]);
                 } else {
                     updateFinalQuery(query);
                 }
@@ -241,9 +283,10 @@ public class LauncherActivity extends AppCompatActivity{
         finalQuery.put("q", q);
     }
 
-    public static void updateDialog(Result result) {
+    public static void updateDialog(Result result, boolean append) {
         RecyclerViewItem temp;
-        resultList.clear();
+        if (!append)
+            resultList.clear();
         for (Child c:
                 result.getData().getChildren()) {
             temp = UtilMethods.buildRecyclerViewItemt(c);
@@ -279,7 +322,7 @@ public class LauncherActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("LauncherActivity.java", "onCreateOptionsMenu");
+        Log.d(TAG, "onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 //        MenuItem actionDark = menu.findItem(R.id.action_dark);
@@ -370,7 +413,7 @@ public class LauncherActivity extends AppCompatActivity{
 
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         public void onRefresh() {
-            Log.d("LauncherActivity.java", "onRefresh called");
+            Log.d(TAG, "onRefresh called");
             initializeSearch();
         }
     };
@@ -378,7 +421,7 @@ public class LauncherActivity extends AppCompatActivity{
     EditText.OnClickListener searchEditTextClickListener = new EditText.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d("LauncherActivity.java", "Clicked search edittext");
+            Log.d(TAG, "Clicked search edittext");
             searchOptions.setVisibility(View.VISIBLE);
             searchOptionsFlag = true;
         }
@@ -443,7 +486,7 @@ public class LauncherActivity extends AppCompatActivity{
     RecyclerView.RecyclerListener recyclerListener = new RecyclerView.RecyclerListener() {
         @Override
         public void onViewRecycled(RecyclerView.ViewHolder holder) {
-            Log.d("LauncherActivity.java", Long.toString(holder.getItemId()));
+            Log.d(TAG, Long.toString(holder.getItemId()));
         }
     };
 

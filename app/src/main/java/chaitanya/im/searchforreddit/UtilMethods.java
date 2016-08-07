@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import chaitanya.im.searchforreddit.DataModel.Child;
 import chaitanya.im.searchforreddit.DataModel.Data_;
@@ -25,6 +26,7 @@ public final class UtilMethods {
 
     public final static int THEME_DEFAULT = 0;
     public final static int THEME_BLACK = 1;
+    public final static String TAG = "UtilMethods.java";
 
     public static String getTimeString(long utcTime) {
         // Inspired from https://gist.github.com/dmsherazi/5985a093076a8c4e7c38
@@ -49,7 +51,7 @@ public final class UtilMethods {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(url));
-        Log.d("resultClicked()", url);
+        Log.d(TAG, url);
 
         if (browserIntent.resolveActivity(activity.getPackageManager()) != null) {
             activity.startActivity(browserIntent);
@@ -61,10 +63,21 @@ public final class UtilMethods {
         Matcher m = Patterns.WEB_URL.matcher(text);
         while (m.find()) {
             String url = m.group();
-            Log.d("ShareActivity.java", "URL extracted: " + url);
+            Log.d(TAG, "URL extracted: " + url);
             links.add(url);
         }
         return links.toArray(new String[links.size()]);
+    }
+
+    public static String extractYoutubeID(String url) {
+        String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+        Pattern compiledPattern = Pattern.compile(pattern);
+        Matcher matcher = compiledPattern.matcher(url);
+        if (matcher.find()) {
+            return matcher.group();
+        } else {
+            return null;
+        }
     }
 
     public static void hideKeyboard(AppCompatActivity activity) {

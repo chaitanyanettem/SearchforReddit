@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     tools:context="chaitanya.im.searchforreddit.LauncherActivity"
     android:id="@+id/launcher_coordinatorlayout"
     android:background="?attr/mainBackgroundColor">
@@ -148,11 +147,6 @@
                 android:scrollbars="vertical"
                 android:id="@+id/result_view_launcher"/>
         </android.support.v4.widget.SwipeRefreshLayout>
-
-        <!--<TextView-->
-        <!--android:layout_width="419dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/email"/>-->
 
     </LinearLayout>
 

@@ -42,5 +42,8 @@
     <string name="no_internet">Oh noes! The internet cannot be reached &#xf119;</string>
 
     <string name="preference_file_key">chaitanya.im.searchforreddit.preference_file_key</string>
-    <string name="style_pref_key">0</string>
+    <string name="premium_check">chaitanya.im.searchforreddit.premium_check</string>
+
+    <string name="donate_key">donate</string>
+    <string name="style_pref_key">style</string>
 </resources>

@@ -8,15 +8,6 @@ public class Data {
     private List<Child> children = new ArrayList<>();
     private String after;
     private String before;
-    private Object facets;
-
-    public Object getFacets() {
-        return facets;
-    }
-
-    public void setFacets(Object facets) {
-        this.facets = facets;
-    }
 
     public String getModhash() {
         return modhash;
@@ -34,7 +25,7 @@ public class Data {
         this.children = children;
     }
 
-    public Object getAfter() {
+    public String getAfter() {
         return after;
     }
 
@@ -42,7 +33,7 @@ public class Data {
         this.after = after;
     }
 
-    public Object getBefore() {
+    public String getBefore() {
         return before;
     }
 

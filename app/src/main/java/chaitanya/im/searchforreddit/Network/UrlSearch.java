@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.google.firebase.crash.FirebaseCrash;
 
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import chaitanya.im.searchforreddit.DataModel.Result;
@@ -34,9 +35,12 @@ public class UrlSearch {
     CoordinatorLayout coordinatorLayout;
     public Snackbar snackbar;
     TextView label;
-    final String HTTP_ERROR = "There was an issue with Reddit's server. Please try again. HTTP Error code - ";
-    final String PARSING_ERROR = "There was an issue with parsing the response from Reddit. The developer has been informed. Please try again.";
-    final String UNKNOWN_ISSUE = "There was an unknown issue. The developer has been informed. Please try again.";
+
+    public final static String TAG = "UrlSearch.java";
+    public final static String HTTP_ERROR = "There was an issue with Reddit's server. Please try again. HTTP Error code - ";
+    public final static String PARSING_ERROR = "There was an issue with parsing the response from Reddit. The developer has been informed. Please try again.";
+    public final static String UNKNOWN_ISSUE = "There was an unknown issue. The developer has been informed. Please try again.";
+    public final static String INTERNET_ISSUE = "There is an issue with your internet. Reddit could not be reached.";
 
     public UrlSearch(String base_url, AppCompatActivity _activity, final int caller) {
         activity = _activity;
@@ -62,24 +66,25 @@ public class UrlSearch {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
                 int statusCode = response.code();
-                Log.d("UrlSearch.java", "executeSearch() - Status code - " +
+                Log.d(TAG, "executeSearch() - Status code - " +
                         Integer.toString(statusCode));
                 if (response.isSuccessful()) {
-                    Log.d("UrlSearch.java", "Response successful");
+                    Log.d(TAG, "Response successful");
                     result = response.body();
                     if (result != null) {
-                        Log.d("UrlSearch.java", "result!=null");
+                        Log.d(TAG, "result!=null");
                         if (source == 0) {
-                            Log.d("UrlSearch.java", "source = 0.");
-                            ShareActivity.updateDialog(result);
+                            Log.d(TAG, "source = 0.");
+                            ShareActivity.updateDialog(result, null);
                         }
                         else
-                            LauncherActivity.updateDialog(result);
+                            LauncherActivity.updateDialog(result, false);
                     }
                     else {
-                        Log.d("UrlSearch.java", "result=null");
+                        Log.d(TAG, "result=null");
                         if(source == 0) {
                             label.setText(PARSING_ERROR);
+                            label.setVisibility(View.VISIBLE);
                         }
                         else {
                             launcherRefresh.setRefreshing(false);
@@ -91,9 +96,9 @@ public class UrlSearch {
                     }
                 }
                 else {
-                    Log.d("UrlSearch.java", "Response unsuccessful");
+                    Log.d(TAG, "Response unsuccessful");
                     if(source == 0) {
-                        label.setText(HTTP_ERROR + statusCode);
+                        ShareActivity.updateDialog(null, HTTP_ERROR + statusCode);
                     }
                     else {
                         snackbar = Snackbar.make(coordinatorLayout, HTTP_ERROR + statusCode, Snackbar.LENGTH_INDEFINITE);
@@ -109,18 +114,28 @@ public class UrlSearch {
             public void onFailure(Call<Result> call, Throwable t) {
                 String logMsg = "executeSearch failed. Throwable is - " + t.toString() +
                         "; URL was - " + call.request().url().toString();
+
+
                 FirebaseCrash.report(new Exception(logMsg));
                 if(source == 0) {
-                    label.setText(UNKNOWN_ISSUE);
+                    if (t instanceof UnknownHostException) {
+                        ShareActivity.updateDialog(null, INTERNET_ISSUE);
+                    }
+                    else {
+                        ShareActivity.updateDialog(null, UNKNOWN_ISSUE);
+                    }
                 }
                 else {
-                    snackbar = Snackbar.make(coordinatorLayout, UNKNOWN_ISSUE, Snackbar.LENGTH_INDEFINITE);
+                    if (t instanceof UnknownHostException)
+                        snackbar = Snackbar.make(coordinatorLayout, INTERNET_ISSUE, Snackbar.LENGTH_INDEFINITE);
+                    else
+                        snackbar = Snackbar.make(coordinatorLayout, UNKNOWN_ISSUE, Snackbar.LENGTH_INDEFINITE);
                     View snackbarView = snackbar.getView();
                     snackbarView.setBackgroundColor(ContextCompat.getColor(activity, R.color.blue_tint));
                     snackbar.show();
                     launcherRefresh.setRefreshing(false);
                 }
-                Log.e("UrlSearch.java", logMsg);
+                Log.e(TAG, logMsg);
             }
         });
     }

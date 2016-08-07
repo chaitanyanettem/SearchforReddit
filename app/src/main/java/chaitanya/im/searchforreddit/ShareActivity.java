@@ -30,6 +30,7 @@ import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class ShareActivity extends AppCompatActivity {
 
+    public final static String TAG = "ShareActivity.java";
     final String BASE_URL = "https://www.reddit.com";
     final String RULER_FLAG = "rulerFlag";
     final int SOURCE = 0;
@@ -44,7 +45,7 @@ public class ShareActivity extends AppCompatActivity {
     static RecyclerView rvResults;
     static View ruler;
     static ProgressBar markerProgress;
-    ImageButton openInLauncherButton;
+    Button openInLauncherButton;
 
     UrlSearch urlSearch;
     String sharedText;
@@ -76,11 +77,18 @@ public class ShareActivity extends AppCompatActivity {
         label = (TextView) findViewById(R.id.label);
         markerProgress = (ProgressBar) findViewById(R.id.marker_progress);
         ruler = findViewById(R.id.ruler);
-        openInLauncherButton = (ImageButton) findViewById(R.id.open_in_main_button);
+        openInLauncherButton = (Button) findViewById(R.id.open_in_main_button);
 
         openInLauncherButton.setOnLongClickListener(longClickListener);
+        markerProgress.setVisibility(View.VISIBLE);
+        ruler.setVisibility(View.VISIBLE);
+        if (resultList.size() != 0) {
 
-        Log.d("ShareActivity.java", "onCreate");
+            resultList.clear();
+            adapter.notifyDataSetChanged();
+        }
+
+        Log.d(TAG, "onCreate");
         assert(sharedTextView != null);
         assert(label != null);
         assert(ruler != null);
@@ -93,13 +101,13 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("ShareActivity.java", "onResume");
+        Log.d(TAG, "onResume");
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d("ShareActivity.java", "onNewIntent");
+        Log.d(TAG, "onNewIntent");
         receiveIntent(intent);
     }
 
@@ -110,20 +118,24 @@ public class ShareActivity extends AppCompatActivity {
         }
         String action = intent.getAction();
         intent.getFlags();
-        Log.d("ShareActivity.java", "receiveIntent() toString - " + intent.toString());
+        Log.d(TAG, "receiveIntent() toString - " + intent.toString());
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
             sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-            Log.d("ShareActivity.java", "Shared Text:" + sharedText);
+            Log.d(TAG, "Shared Text:" + sharedText);
             sharedTextView.setText("Shared Text - " + sharedText);
             if (!sharedText.equals("")) {
                 sharedTextView.setText("Shared Text - " + sharedText);
                 if (UtilMethods.isNetworkAvailable(this)) {
                     String[] links = UtilMethods.extractLinks(sharedText);
                     if (links.length > 0) {
-                        Log.d("ShareActivity.java", "receiveIntent() - link = " + links[0]);
-                        updateFinalQuery("url:" + links[0]);
+                        Log.d(TAG, "receiveIntent() - link = " + links[0]);
+                        String youtubeID = UtilMethods.extractYoutubeID(links[0]);
+                        if (youtubeID != null)
+                            updateFinalQuery("url:" + youtubeID);
+                        else
+                            updateFinalQuery("url:" + links[0]);
 
                     } else {
                         updateFinalQuery(sharedText);
@@ -148,29 +160,34 @@ public class ShareActivity extends AppCompatActivity {
         finalQuery.put("q", q);
     }
 
-    public static void updateDialog(Result result) {
+    public static void updateDialog(Result result, String message) {
 
-        RecyclerViewItem temp;
-        resultList.clear();
-        Data_ d;
+        if (result != null) {
+            RecyclerViewItem temp;
+            resultList.clear();
+            Data_ d;
 
-        for (Child c:
-                result.getData().getChildren()) {
-            temp = UtilMethods.buildRecyclerViewItemt(c);
-            resultList.add(temp);
+            for (Child c :
+                    result.getData().getChildren()) {
+                temp = UtilMethods.buildRecyclerViewItemt(c);
+                resultList.add(temp);
+            }
+
+            if (resultList.size() != 0) {
+                label.setText("Number of results: " + resultList.size());
+                ruler.setVisibility(View.VISIBLE);
+                rulerFlag = true;
+            } else
+                label.setText("0 results found");
+
+            adapter.notifyDataSetChanged();
         }
-
-        if (resultList.size()!=0) {
-            label.setText("Number of results: " + resultList.size());
-            ruler.setVisibility(View.VISIBLE);
-            rulerFlag = true;
+        else {
+            label.setText(message);
         }
-        else
-            label.setText("0 results found");
 
         markerProgress.setVisibility(View.GONE);
         label.setVisibility(View.VISIBLE);
-        adapter.notifyDataSetChanged();
     }
 
     public void openLauncherActivity(View view) {

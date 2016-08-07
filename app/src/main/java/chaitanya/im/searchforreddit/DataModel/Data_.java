@@ -7,37 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Data_ {
-    private String domain;
-    @SerializedName("banned_by")
-    private Object bannedBy;
     @SerializedName("media_embed")
     private MediaEmbed mediaEmbed;
     private String subreddit;
     @SerializedName("selftext_html")
     private String selftextHtml;
     private String selftext;
-    private Object likes;
-    @SerializedName("suggested_sort")
-    private Object suggestedSort;
-    @SerializedName("user_reports")
-    private List<Object> userReports = new ArrayList<Object>();
     @SerializedName("secure_media")
     private Media secureMedia;
     @SerializedName("link_flair_text")
-    private Object linkFlairText;
+    private String linkFlairText;
     private String id;
-    @SerializedName("from_kind")
-    private Object fromKind;
     private Integer gilded;
     private Boolean archived;
     private Boolean clicked;
-    @SerializedName("report_reasons")
-    private Object reportReasons;
     private String author;
-    private Media media;
     private Integer score;
-    @SerializedName("approved_by")
-    private Object approvedBy;
     @SerializedName("over_18")
     private Boolean over18;
     private Boolean hidden;
@@ -49,41 +34,28 @@ public class Data_ {
     private String subredditId;
     @SerializedName("hide_score")
     private Boolean hideScore;
-    private Object edited;
-    @SerializedName("link_flair_css_class")
-    private Object linkFlairCssClass;
-    private Object authorFlairCssClass;
     private Integer downs;
     @SerializedName("secure_media_embed")
     private MediaEmbed secureMediaEmbed;
     private Boolean saved;
-    @SerializedName("removal_reason")
-    private Object removalReason;
     @SerializedName("post_hint")
     private String postHint;
     private Boolean stickied;
-    private Object from;
     @SerializedName("is_self")
     private Boolean isSelf;
-    @SerializedName("from_id")
-    private Object fromId;
     private String permalink;
     private Boolean locked;
     private String name;
     private Double created;
     private String url;
     @SerializedName("author_flair_text")
-    private Object authorFlairText;
+    private String authorFlairText;
     private Boolean quarantine;
     private String title;
     @SerializedName("created_utc")
     private Long createdUtc;
-    private Object distinguished;
-    @SerializedName("mod_reports")
-    private List<Object> modReports = new ArrayList<Object>();
     private Boolean visited;
     @SerializedName("num_reports")
-    private Object numReports;
     private Integer ups;
 
     public Integer getUps() {
@@ -94,36 +66,12 @@ public class Data_ {
         this.ups = ups;
     }
 
-    public Object getNumReports() {
-        return numReports;
-    }
-
-    public void setNumReports(Object numReports) {
-        this.numReports = numReports;
-    }
-
     public Boolean getVisited() {
         return visited;
     }
 
     public void setVisited(Boolean visited) {
         this.visited = visited;
-    }
-
-    public List<Object> getModReports() {
-        return modReports;
-    }
-
-    public void setModReports(List<Object> modReports) {
-        this.modReports = modReports;
-    }
-
-    public Object getDistinguished() {
-        return distinguished;
-    }
-
-    public void setDistinguished(Object distinguished) {
-        this.distinguished = distinguished;
     }
 
     public Long getCreatedUtc() {
@@ -150,11 +98,11 @@ public class Data_ {
         this.quarantine = quarantine;
     }
 
-    public Object getAuthorFlairText() {
+    public String getAuthorFlairText() {
         return authorFlairText;
     }
 
-    public void setAuthorFlairText(Object authorFlairText) {
+    public void setAuthorFlairText(String authorFlairText) {
         this.authorFlairText = authorFlairText;
     }
 
@@ -198,14 +146,6 @@ public class Data_ {
         this.permalink = permalink;
     }
 
-    public Object getFromId() {
-        return fromId;
-    }
-
-    public void setFromId(Object fromId) {
-        this.fromId = fromId;
-    }
-
     public Boolean getSelf() {
         return isSelf;
     }
@@ -214,28 +154,12 @@ public class Data_ {
         isSelf = self;
     }
 
-    public Object getFrom() {
-        return from;
-    }
-
-    public void setFrom(Object from) {
-        this.from = from;
-    }
-
     public Boolean getStickied() {
         return stickied;
     }
 
     public void setStickied(Boolean stickied) {
         this.stickied = stickied;
-    }
-
-    public Object getRemovalReason() {
-        return removalReason;
-    }
-
-    public void setRemovalReason(Object removalReason) {
-        this.removalReason = removalReason;
     }
 
     public Boolean getSaved() {
@@ -260,30 +184,6 @@ public class Data_ {
 
     public void setDowns(Integer downs) {
         this.downs = downs;
-    }
-
-    public Object getAuthorFlairCssClass() {
-        return authorFlairCssClass;
-    }
-
-    public void setAuthorFlairCssClass(Object authorFlairCssClass) {
-        this.authorFlairCssClass = authorFlairCssClass;
-    }
-
-    public Object getLinkFlairCssClass() {
-        return linkFlairCssClass;
-    }
-
-    public void setLinkFlairCssClass(Object linkFlairCssClass) {
-        this.linkFlairCssClass = linkFlairCssClass;
-    }
-
-    public Object getEdited() {
-        return edited;
-    }
-
-    public void setEdited(Object edited) {
-        this.edited = edited;
     }
 
     public Boolean getHideScore() {
@@ -334,14 +234,6 @@ public class Data_ {
         this.over18 = over18;
     }
 
-    public Object getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(Object approvedBy) {
-        this.approvedBy = approvedBy;
-    }
-
     public Integer getScore() {
         return score;
     }
@@ -350,28 +242,12 @@ public class Data_ {
         this.score = score;
     }
 
-    public Media getMedia() {
-        return media;
-    }
-
-    public void setMedia(Media media) {
-        this.media = media;
-    }
-
     public String getAuthor() {
         return author;
     }
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public Object getReportReasons() {
-        return reportReasons;
-    }
-
-    public void setReportReasons(Object reportReasons) {
-        this.reportReasons = reportReasons;
     }
 
     public Boolean getClicked() {
@@ -398,14 +274,6 @@ public class Data_ {
         this.gilded = gilded;
     }
 
-    public Object getFromKind() {
-        return fromKind;
-    }
-
-    public void setFromKind(Object fromKind) {
-        this.fromKind = fromKind;
-    }
-
     public String getId() {
         return id;
     }
@@ -414,11 +282,11 @@ public class Data_ {
         this.id = id;
     }
 
-    public Object getLinkFlairText() {
+    public String getLinkFlairText() {
         return linkFlairText;
     }
 
-    public void setLinkFlairText(Object linkFlairText) {
+    public void setLinkFlairText(String linkFlairText) {
         this.linkFlairText = linkFlairText;
     }
 
@@ -428,30 +296,6 @@ public class Data_ {
 
     public void setSecureMedia(Media secureMedia) {
         this.secureMedia = secureMedia;
-    }
-
-    public List<Object> getUserReports() {
-        return userReports;
-    }
-
-    public void setUserReports(List<Object> userReports) {
-        this.userReports = userReports;
-    }
-
-    public Object getSuggestedSort() {
-        return suggestedSort;
-    }
-
-    public void setSuggestedSort(Object suggestedSort) {
-        this.suggestedSort = suggestedSort;
-    }
-
-    public Object getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Object likes) {
-        this.likes = likes;
     }
 
     public String getSelftext() {
@@ -484,22 +328,6 @@ public class Data_ {
 
     public void setMediaEmbed(MediaEmbed mediaEmbed) {
         this.mediaEmbed = mediaEmbed;
-    }
-
-    public Object getBannedBy() {
-        return bannedBy;
-    }
-
-    public void setBannedBy(Object bannedBy) {
-        this.bannedBy = bannedBy;
-    }
-
-    public String getDomain() {
-        return domain;
-    }
-
-    public void setDomain(String domain) {
-        this.domain = domain;
     }
 
     public String getPostHint() {
