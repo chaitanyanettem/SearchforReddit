@@ -198,6 +198,9 @@ public class LauncherActivity extends AppCompatActivity {
             searchOptionsFlag = true;
         }
 
+        launcherRefresh.setColorSchemeColors(ContextCompat.getColor(this, R.color.blue_tint),
+                ContextCompat.getColor(this, R.color.reddit_orange),
+                ContextCompat.getColor(this,R.color.material_light_black));
         Intent intent = getIntent();
         receiveIntent(intent);
     }
