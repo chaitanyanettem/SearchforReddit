@@ -2,7 +2,6 @@ package chaitanya.im.searchforreddit;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -19,26 +18,28 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHolder> {
 
     private static List<RecyclerViewItem> resultList;
-    private static AppCompatActivity context;
-    String point;
-    String comment;
-    Typeface fontawesome;
+    private final AppCompatActivity _context;
+    private final String point;
+    private final String comment;
+    private final Typeface fontawesome;
 
-    public ResultsAdapter(List<RecyclerViewItem> results, AppCompatActivity context) {
+    ResultsAdapter(List<RecyclerViewItem> results, AppCompatActivity context) {
         resultList = results;
-        this.context = context;
+        _context = context;
         comment = context.getString(R.string.comment);
         point = context.getString(R.string.upvote);
         fontawesome = Typeface.createFromAsset(context.getAssets(), "fontawesome-webfont.ttf");
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView titleTextView;
-        public TextView topTextView;
-        public TextView bottomTextView;
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        final TextView titleTextView;
+        final TextView topTextView;
+        final TextView bottomTextView;
+        private final AppCompatActivity _context;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView, AppCompatActivity context) {
             super(itemView);
+            _context = context;
             titleTextView = (TextView) itemView.findViewById(R.id.post_title);
             topTextView = (TextView) itemView.findViewById(R.id.top_text_view);
             bottomTextView = (TextView) itemView.findViewById(R.id.bottom_text_view);
@@ -49,7 +50,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         public void onClick(View view) {
             int position = getLayoutPosition(); // gets item position
             String url = resultList.get(position).getPermalink();
-            UtilMethods.resultClicked(context, url);
+            UtilMethods.resultClicked(_context, url);
         }
     }
 
@@ -59,8 +60,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View resultView = inflater.inflate(R.layout.result_card, parent, false);
-        ViewHolder viewHolder = new ViewHolder(resultView);
-        return viewHolder;
+        return new ViewHolder(resultView, _context);
     }
 
     //populate data in each itemview in the recyclerview

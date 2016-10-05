@@ -9,6 +9,7 @@
         <item name="android:textColor">@color/material_grey_900_m</item>
         <item name="android:textColorPrimary">@color/material_grey_900_m</item>
 
+        <item name="boldTextColor">@color/material_grey_900_m</item>
         <item name="searchBoxColor">@color/colorPrimary0</item>
         <item name="resultTitleColor">@color/colorPrimary1</item>
         <item name="licenseBoxColor">@color/material_grey_200</item>
@@ -26,6 +27,7 @@
         <item name="android:itemTextAppearance">@color/material_grey_100_m</item>
         <item name="android:itemBackground">@color/material_grey_700</item>
 
+        <item name="boldTextColor">@color/material_grey_100_m</item>
         <item name="searchBoxColor">@color/material_grey_800_m</item>
         <item name="resultTitleColor">@color/colorPrimary0</item>
         <item name="licenseBoxColor">@color/material_grey_700</item>
@@ -47,6 +49,7 @@
         <item name="licenseBoxColor">@color/material_grey_200</item>
         <item name="toolbarColor">@color/colorPrimary0</item>
     </style>
+
     <style name="shareDialogDark" parent="Theme.AppCompat.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
 

@@ -23,41 +23,34 @@ import java.util.List;
 import java.util.Map;
 
 import chaitanya.im.searchforreddit.DataModel.Child;
-import chaitanya.im.searchforreddit.DataModel.Data_;
 import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
 public class ShareActivity extends AppCompatActivity {
 
-    public final static String TAG = "ShareActivity.java";
-    final String BASE_URL = "https://www.reddit.com";
-    final String RULER_FLAG = "rulerFlag";
-    final int SOURCE = 0;
-    public final static String EXTRA_SHARED_TEXT = "com.mycompany.myfirstapp.SHARED_TEXT";
+    private final static String TAG = "ShareActivity.java";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String BASE_URL = "https://www.reddit.com";
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int SOURCE = 0;
+    public final static String EXTRA_SHARED_TEXT = "chaitanya.im.searchforreddit.SHARED_TEXT";
 
-    private static boolean rulerFlag = false;
-    private SharedPreferences sharedPref;
-    private int theme;
+    private TextView sharedTextView;
+    @SuppressWarnings("FieldCanBeLocal")
+    private RecyclerView rvResults;
 
-    TextView sharedTextView;
-    static TextView label;
-    static RecyclerView rvResults;
-    static View ruler;
-    static ProgressBar markerProgress;
-    Button openInLauncherButton;
-
-    UrlSearch urlSearch;
-    String sharedText;
-    static List<RecyclerViewItem> resultList = new ArrayList<>();
-    static ResultsAdapter adapter;
-    Map<String, String> finalQuery;
+    private UrlSearch urlSearch;
+    private String sharedText;
+    private static final List<RecyclerViewItem> resultList = new ArrayList<>();
+    private ResultsAdapter adapter;
+    private Map<String, String> finalQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedPref = getSharedPreferences(getString(R.string.preference_file_key),
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
-        theme = sharedPref.getInt(getString(R.string.style_pref_key), SOURCE);
+        int theme = sharedPref.getInt(getString(R.string.style_pref_key), SOURCE);
         UtilMethods.onActivityCreateSetTheme(this, theme, 0);
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -65,33 +58,30 @@ public class ShareActivity extends AppCompatActivity {
 
         //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
 
-        urlSearch = new UrlSearch(BASE_URL, this, 0);
         rvResults = (RecyclerView) findViewById(R.id.result_view);
         adapter = new ResultsAdapter(resultList, this);
         rvResults.setAdapter(adapter);
+        urlSearch = new UrlSearch(BASE_URL, this, 0, adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
         rvResults.addItemDecoration(new SimpleDividerItemDecoration(this, theme));
         finalQuery = new HashMap<>();
 
         sharedTextView = (TextView) findViewById(R.id.shared_content);
-        label = (TextView) findViewById(R.id.label);
-        markerProgress = (ProgressBar) findViewById(R.id.marker_progress);
-        ruler = findViewById(R.id.ruler);
-        openInLauncherButton = (Button) findViewById(R.id.open_in_main_button);
+        ProgressBar markerProgress = (ProgressBar) findViewById(R.id.marker_progress);
+        View ruler = findViewById(R.id.ruler);
+        Button openInLauncherButton = (Button) findViewById(R.id.open_in_main_button);
 
         openInLauncherButton.setOnLongClickListener(longClickListener);
         markerProgress.setVisibility(View.VISIBLE);
         ruler.setVisibility(View.VISIBLE);
-        if (resultList.size() != 0) {
-
-            resultList.clear();
-            adapter.notifyDataSetChanged();
-        }
+        clearResultList();
 
         Log.d(TAG, "onCreate");
-        assert(sharedTextView != null);
-        assert(label != null);
-        assert(ruler != null);
+        if (BuildConfig.DEBUG && sharedTextView == null)
+            throw new RuntimeException();
+        if (BuildConfig.DEBUG && ruler == null)
+            throw new RuntimeException();
+
         //assert(query != null);
 
         Intent intent = getIntent();
@@ -104,6 +94,13 @@ public class ShareActivity extends AppCompatActivity {
         Log.d(TAG, "onResume");
     }
 
+    private void clearResultList() {
+        if (resultList.size() != 0) {
+            resultList.clear();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -111,11 +108,8 @@ public class ShareActivity extends AppCompatActivity {
         receiveIntent(intent);
     }
 
-    void receiveIntent(Intent intent) {
-        if(resultList.size()>0) {
-            resultList.clear();
-            adapter.notifyDataSetChanged();
-        }
+    private void receiveIntent(Intent intent) {
+        clearResultList();
         String action = intent.getAction();
         intent.getFlags();
         Log.d(TAG, "receiveIntent() toString - " + intent.toString());
@@ -124,9 +118,9 @@ public class ShareActivity extends AppCompatActivity {
         if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
             sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
             Log.d(TAG, "Shared Text:" + sharedText);
-            sharedTextView.setText("Shared Text - " + sharedText);
+            String sharedTextLabel = getResources().getString(R.string.shared_text) + sharedText;
             if (!sharedText.equals("")) {
-                sharedTextView.setText("Shared Text - " + sharedText);
+                sharedTextView.setText(sharedTextLabel);
                 if (UtilMethods.isNetworkAvailable(this)) {
                     String[] links = UtilMethods.extractLinks(sharedText);
                     if (links.length > 0) {
@@ -143,44 +137,51 @@ public class ShareActivity extends AppCompatActivity {
                     urlSearch.executeSearch(finalQuery, 0);
                 }
                 else {
-                    sharedTextView.setText("Oh noes! The internet can't be reached :(");
+                    sharedTextView.setText(getResources().getString(R.string.internet_unreachable));
                 }
             }
             else {
-                this.sharedTextView.setText("Empty search");
+                this.sharedTextView.setText(getResources().getString(R.string.empty_search));
             }
         }
 
     }
 
-    void updateFinalQuery(String q){
+    private void updateFinalQuery(String q){
         finalQuery.clear();
         finalQuery.put("t","");
         finalQuery.put("sort", "");
         finalQuery.put("q", q);
     }
 
-    public static void updateDialog(Result result, String message) {
+    public static void updateDialog(AppCompatActivity _activity, Result result, String message, ResultsAdapter _adapter) {
 
+        TextView label = (TextView) _activity.findViewById(R.id.label);
+        ProgressBar markerProgress = (ProgressBar) _activity.findViewById(R.id.marker_progress);
+        View ruler = _activity.findViewById(R.id.ruler);
+
+        if (_adapter == null)
+            Log.d(TAG, "UpdateDialog() - adapter is null");
         if (result != null) {
-            RecyclerViewItem temp;
-            resultList.clear();
-            Data_ d;
+            if (_adapter != null) {
+                RecyclerViewItem temp;
+                resultList.clear();
+                _adapter.notifyDataSetChanged();
 
-            for (Child c :
-                    result.getData().getChildren()) {
-                temp = UtilMethods.buildRecyclerViewItemt(c);
-                resultList.add(temp);
+                for (Child c :
+                        result.getData().getChildren()) {
+                    temp = UtilMethods.buildRecyclerViewItem(c);
+                    resultList.add(temp);
+                }
+
+                String numberOfResults = _activity.getResources().getString(R.string.number_of_results_string) + resultList.size();
+                label.setText(numberOfResults);
+
+                if (resultList.size() != 0) {
+                    ruler.setVisibility(View.VISIBLE);
+                    _adapter.notifyDataSetChanged();
+                }
             }
-
-            if (resultList.size() != 0) {
-                label.setText("Number of results: " + resultList.size());
-                ruler.setVisibility(View.VISIBLE);
-                rulerFlag = true;
-            } else
-                label.setText("0 results found");
-
-            adapter.notifyDataSetChanged();
         }
         else {
             label.setText(message);
@@ -190,6 +191,7 @@ public class ShareActivity extends AppCompatActivity {
         label.setVisibility(View.VISIBLE);
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void openLauncherActivity(View view) {
         Intent intent = new Intent(this, LauncherActivity.class);
         intent.putExtra(EXTRA_SHARED_TEXT, sharedText);
@@ -197,7 +199,7 @@ public class ShareActivity extends AppCompatActivity {
     }
 
 
-    ImageButton.OnLongClickListener longClickListener = new ImageButton.OnLongClickListener() {
+    private final ImageButton.OnLongClickListener longClickListener = new ImageButton.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
             Toast buttonDesc = Toast.makeText(ShareActivity.this, v.getContentDescription(), Toast.LENGTH_SHORT);

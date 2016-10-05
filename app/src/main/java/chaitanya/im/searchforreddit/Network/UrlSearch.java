@@ -1,6 +1,5 @@
 package chaitanya.im.searchforreddit.Network;
 
-import android.graphics.Typeface;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +17,7 @@ import java.util.Map;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.LauncherActivity;
 import chaitanya.im.searchforreddit.R;
+import chaitanya.im.searchforreddit.ResultsAdapter;
 import chaitanya.im.searchforreddit.ShareActivity;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -28,25 +28,32 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UrlSearch {
-    RedditEndpointInterface endpoint;
-    AppCompatActivity activity;
-    SwipeRefreshLayout launcherRefresh;
-    Result result;
-    CoordinatorLayout coordinatorLayout;
+    private final RedditEndpointInterface endpoint;
+    private final AppCompatActivity activity;
+    private SwipeRefreshLayout launcherRefresh;
+    private Result result;
+    private CoordinatorLayout coordinatorLayout;
     public Snackbar snackbar;
-    TextView label;
+    private TextView label;
+    private final ResultsAdapter adapter;
 
-    public final static String TAG = "UrlSearch.java";
-    public final static String HTTP_ERROR = "There was an issue with Reddit's server. Please try again. HTTP Error code - ";
-    public final static String PARSING_ERROR = "There was an issue with parsing the response from Reddit. The developer has been informed. Please try again.";
-    public final static String UNKNOWN_ISSUE = "There was an unknown issue. The developer has been informed. Please try again.";
-    public final static String INTERNET_ISSUE = "There is an issue with your internet. Reddit could not be reached.";
+    private final static String TAG = "UrlSearch.java";
+    private final static String HTTP_ERROR = "There was an issue with Reddit's server. Please try again. HTTP Error code - ";
+    private final static String PARSING_ERROR = "There was an issue with parsing the response from Reddit. The developer has been informed. Please try again.";
+    private final static String UNKNOWN_ISSUE = "There was an unknown issue. The developer has been informed. Please try again.";
+    private final static String INTERNET_ISSUE = "There is an issue with your internet. Reddit could not be reached.";
 
-    public UrlSearch(String base_url, AppCompatActivity _activity, final int caller) {
+    public UrlSearch(String base_url, AppCompatActivity _activity, final int caller, ResultsAdapter _adapter) {
+        adapter = _adapter;
         activity = _activity;
-        coordinatorLayout = (CoordinatorLayout) activity.findViewById(R.id.launcher_coordinatorlayout);
-        label = (TextView) activity.findViewById(R.id.label);
-        launcherRefresh = (SwipeRefreshLayout) activity.findViewById(R.id.launcher_refresh);
+        if (caller == 1) {
+            coordinatorLayout = (CoordinatorLayout) activity.findViewById(R.id.launcher_coordinatorlayout);
+            launcherRefresh = (SwipeRefreshLayout) activity.findViewById(R.id.launcher_refresh);
+        }
+        if (caller == 0) {
+            label = (TextView) activity.findViewById(R.id.label);
+        }
+
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -75,10 +82,10 @@ public class UrlSearch {
                         Log.d(TAG, "result!=null");
                         if (source == 0) {
                             Log.d(TAG, "source = 0.");
-                            ShareActivity.updateDialog(result, null);
+                            ShareActivity.updateDialog(activity, result, null, adapter);
                         }
                         else
-                            LauncherActivity.updateDialog(result, false);
+                            LauncherActivity.updateDialog(activity, result, false, adapter);
                     }
                     else {
                         Log.d(TAG, "result=null");
@@ -98,7 +105,7 @@ public class UrlSearch {
                 else {
                     Log.d(TAG, "Response unsuccessful");
                     if(source == 0) {
-                        ShareActivity.updateDialog(null, HTTP_ERROR + statusCode);
+                        ShareActivity.updateDialog(activity, null, HTTP_ERROR + statusCode, adapter);
                     }
                     else {
                         snackbar = Snackbar.make(coordinatorLayout, HTTP_ERROR + statusCode, Snackbar.LENGTH_INDEFINITE);
@@ -119,10 +126,10 @@ public class UrlSearch {
                 FirebaseCrash.report(new Exception(logMsg));
                 if(source == 0) {
                     if (t instanceof UnknownHostException) {
-                        ShareActivity.updateDialog(null, INTERNET_ISSUE);
+                        ShareActivity.updateDialog(activity, null, INTERNET_ISSUE, adapter);
                     }
                     else {
-                        ShareActivity.updateDialog(null, UNKNOWN_ISSUE);
+                        ShareActivity.updateDialog(activity, null, UNKNOWN_ISSUE, adapter);
                     }
                 }
                 else {

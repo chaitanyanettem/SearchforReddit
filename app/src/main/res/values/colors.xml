@@ -20,7 +20,7 @@
     <color name="indigo">#3F51B5</color>
     <color name="blue_tint">#2196F3</color>
     <color name="pink">#E91E63</color>
-    <color name="blood_red">#B71C1C</color>
+    <color name="color_transparent">#00000000</color>
 
     <color name="reddit_orange">#FF9800</color>
 </resources>

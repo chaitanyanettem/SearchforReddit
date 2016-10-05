@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="styleColors">
+        <attr name="boldTextColor" format="color"/>
         <attr name="searchBoxColor" format="color"/>
         <attr name="resultTitleColor" format="color" />
         <attr name="recyclerDivider" format="color" />

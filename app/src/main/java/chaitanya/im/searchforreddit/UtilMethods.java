@@ -22,13 +22,14 @@ import chaitanya.im.searchforreddit.DataModel.Child;
 import chaitanya.im.searchforreddit.DataModel.Data_;
 import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 
-public final class UtilMethods {
+final class UtilMethods {
 
-    public final static int THEME_DEFAULT = 0;
-    public final static int THEME_BLACK = 1;
-    public final static String TAG = "UtilMethods.java";
+    private final static int THEME_DEFAULT = 0;
+    private final static int THEME_BLACK = 1;
+    private final static String TAG = "UtilMethods.java";
 
-    public static String getTimeString(long utcTime) {
+    // takes the utc post time as input and generates a string denoting how long ago the post was made
+    private static String getTimeString(long utcTime) {
         // Inspired from https://gist.github.com/dmsherazi/5985a093076a8c4e7c38
         long difference;
         long unixTime = System.currentTimeMillis() / 1000L;  //get current time in seconds.
@@ -47,7 +48,8 @@ public final class UtilMethods {
         return difference + periods[j];
     }
 
-    public static void resultClicked(AppCompatActivity activity, String url) {
+    // opens the thread when user clicks an item in the recyclerView
+    static void resultClicked(AppCompatActivity activity, String url) {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(url));
@@ -58,7 +60,8 @@ public final class UtilMethods {
         }
     }
 
-    public static String[] extractLinks(String text) {
+    // extracts valid urls from the search string
+    static String[] extractLinks(String text) {
         List<String> links = new ArrayList<>();
         Matcher m = Patterns.WEB_URL.matcher(text);
         while (m.find()) {
@@ -69,7 +72,8 @@ public final class UtilMethods {
         return links.toArray(new String[links.size()]);
     }
 
-    public static String extractYoutubeID(String url) {
+    // extracts youtube id from a string
+    static String extractYoutubeID(String url) {
         String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
         Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(url);
@@ -80,7 +84,7 @@ public final class UtilMethods {
         }
     }
 
-    public static void hideKeyboard(AppCompatActivity activity) {
+    static void hideKeyboard(AppCompatActivity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
@@ -91,7 +95,8 @@ public final class UtilMethods {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static RecyclerViewItem buildRecyclerViewItemt(Child c) {
+    // Creates a RecyclerViewItem from a Child object and returns it
+    static RecyclerViewItem buildRecyclerViewItem(Child c) {
         Data_ d = c.getData();
         RecyclerViewItem temp = new RecyclerViewItem();
         temp.setTitle(d.getTitle());
@@ -104,16 +109,19 @@ public final class UtilMethods {
         return temp;
     }
 
-    public static boolean isNetworkAvailable(Context context) {
+    // Checks availability of network
+    static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public static void onActivityCreateSetTheme(AppCompatActivity activity, int savedThemePreference, int source)
+    // Sets the theme of the based on the savedThemePreference parameter passed to it.
+    // savedThemePreference = 0 for light theme
+    // savedThemePreference = 1 for dark theme
+    static void onActivityCreateSetTheme(AppCompatActivity activity, int savedThemePreference, int source)
     {
-        int defaultValue = 0;
         switch (savedThemePreference)
         {
             default:
@@ -132,7 +140,7 @@ public final class UtilMethods {
         }
     }
 
-    public static void changeToTheme(Activity activity, int theme, SharedPreferences sharedPref) {
+    static void changeToTheme(Activity activity, int theme, SharedPreferences sharedPref) {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(activity.getString(R.string.style_pref_key), theme);
         editor.commit();

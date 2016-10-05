@@ -36,8 +36,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="?attr/searchBoxColor"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:id="@+id/search_box">
@@ -53,14 +51,21 @@
                 android:layout_width="0dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
+                android:textSize="18.5sp"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:background="@android:color/transparent"
                 android:layout_gravity="center_vertical"
                 android:hint="@string/search_hint"
                 android:id="@+id/search_edit_text"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_close_circle"
+                android:background="@color/color_transparent"/>
 
         </LinearLayout>
 

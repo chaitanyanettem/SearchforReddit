@@ -7,10 +7,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration{
-    private Drawable divider;
+class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration{
+    private final Drawable divider;
 
-    public SimpleDividerItemDecoration(Context context, int dividerColor) {
+    SimpleDividerItemDecoration(Context context, int dividerColor) {
         if (dividerColor == 0)
             divider = ContextCompat.getDrawable(context,R.drawable.line_divider_light);
         else
