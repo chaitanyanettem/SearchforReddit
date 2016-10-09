@@ -4,12 +4,12 @@
     <string name="search">Search</string>
     <string name="search_description">Submit the search request</string>
     <string name="edit_search">Edit shared text and sort by time/votes etc.</string>
+    <string name="action_edit_search">Edit Search</string>
 
     <string name="action_sort">Sort results by relevance/upvotes/post time etc.</string>
     <string name="action_time">Restrict results by post time</string>
     <string name="action_refresh">Refresh Results</string>
     <string name="action_donate">♛ Donate!</string>
-    <string name="action_filter">Filter Search results by subreddit/website/author/NSFW etc.</string>
     <string name="action_dark">Dark Theme</string>
     <string name="action_licenses">Licenses</string>
     <string name="action_about">About</string>
@@ -38,6 +38,7 @@
     <string name="license_apache">Licensed under the Apache License, Version 2.0 (the "License");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n\thttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an "AS IS" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
 
     <string name="empty_search_box">Please enter something in the search box &#xf118;</string>
+    <string name="clear_text">Clear the search box</string>
     <string name="no_internet">Oh noes! The internet cannot be reached &#xf119;</string>
 
     <string name="preference_file_key">chaitanya.im.searchforreddit.preference_file_key</string>

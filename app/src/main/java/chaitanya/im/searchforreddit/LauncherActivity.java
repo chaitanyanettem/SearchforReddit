@@ -22,6 +22,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,13 +69,16 @@ public class LauncherActivity extends AppCompatActivity {
     private static final String SORT_VALUE = "sortValue";
     private static final int SOURCE = 1;
     private static final String SEARCH_OPTIONS_FLAG = "searchOptionsFlag";
+    private static final String CLEAR_SEARCH_BOX_BUTTON_FLAG = "clearSearchBoxButtonFlag";
 
     private static final String [] timeValues = {"day", "week", "month", "year", ""};
 
     private static final String [] sortValues = {"top", "new", "comments", ""};
-    private boolean isChecked = false;
 
-    private boolean searchOptionsFlag = false;
+    private boolean isChecked = false;
+    private boolean searchOptionsFlag = true;
+    private boolean clearSearchBoxButtonFlag = false;
+
     private String sortButtonLabel ="Relevance";
     private String timeButtonLabel ="All Time";
     private SharedPreferences sharedPref;
@@ -81,6 +87,7 @@ public class LauncherActivity extends AppCompatActivity {
     private LinearLayout searchOptions;
     private EditText searchEditText;
     //private Button filterButton;
+    private ImageButton clearSearchBoxButton;
     private Button sortButton;
     private Button timeButton;
     private SwipeRefreshLayout launcherRefresh;
@@ -101,8 +108,8 @@ public class LauncherActivity extends AppCompatActivity {
     private int theme;
     private int donate = 0;
     private UrlSearch urlSearch;
-    private Map<String,String> finalQuery;
     private Typeface fontAwesome;
+    private int searchOptionsCenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,17 +159,23 @@ public class LauncherActivity extends AppCompatActivity {
         LinearLayout searchBox = (LinearLayout) findViewById(R.id.search_box);
         searchOptions = (LinearLayout) findViewById(R.id.search_options);
         launcherRefresh = (SwipeRefreshLayout) findViewById(R.id.launcher_refresh);
-        launcherRefresh.setOnRefreshListener(refreshListener);
         searchEditText = (EditText) findViewById(R.id.search_edit_text);
+        clearSearchBoxButton = (ImageButton) findViewById(R.id.clearSearchBox);
         //filterButton = (Button) findViewById(R.id.filter_button);
         sortButton = (Button) findViewById(R.id.sort_button);
         timeButton = (Button) findViewById(R.id.time_button);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.launcher_coordinatorlayout);
-        finalQuery = new HashMap<>();
+        searchOptions.post(new Runnable() {
+            @Override
+            public void run() {
+                searchOptionsCenter = searchOptions.getWidth()/2;
+                if(searchOptions.getVisibility() != View.VISIBLE) {
+                    UtilMethods.revealView(searchOptions, searchOptionsCenter, 0);
+                }
+            }
+        });
         setSupportActionBar(toolbar);
 
-        searchEditText.setOnClickListener(searchEditTextClickListener);
-        searchEditText.setOnFocusChangeListener(searchFocusChangeListener);
         searchEditText.setOnKeyListener(onKeyListener);
         searchEditText.setOnTouchListener(searchEditTextTouchListener);
 
@@ -194,19 +207,21 @@ public class LauncherActivity extends AppCompatActivity {
         }
         Log.d(TAG, "OnCreate");
         Log.d(TAG, "searchEditText - " + searchEditText.getText().toString());
-        // TODO - fix this:
-        if (!searchEditText.getText().toString().equals("")) {
-            Log.d(TAG, "OnCreate, visibility");
-            searchOptions.setVisibility(View.VISIBLE);
-            searchOptionsFlag = true;
-        }
 
+        launcherRefresh.setOnRefreshListener(refreshListener);
         launcherRefresh.setColorSchemeResources(R.color.blue_tint,
                 R.color.reddit_orange,
                 R.color.material_light_black);
 
         Intent intent = getIntent();
         receiveIntent(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // add textchangedlistener here. otherwise textwatcher methods fired on restore.
+        searchEditText.addTextChangedListener(textChanged);
     }
 
     @Override
@@ -360,21 +375,13 @@ public class LauncherActivity extends AppCompatActivity {
         Log.d(TAG, "query - " + query);
         if (UtilMethods.isNetworkAvailable(this)) {
             if (!query.equals("")) {
+                // Internet available and non-empty search
                 launcherRefresh.setRefreshing(true);
-                searchOptions.setVisibility(View.GONE);
-                searchOptionsFlag = false;
+                UtilMethods.hideView(searchOptions, searchOptionsCenter, 0);
                 String[] links = UtilMethods.extractLinks(query);
-                if (links.length > 0) {
-                    Log.d(TAG, "receiveIntent() - link = " + links[0]);
-                    String youtubeID = UtilMethods.extractYoutubeID(links[0]);
-                    if (youtubeID != null)
-                        updateFinalQuery("url:" + youtubeID);
-                    else
-                        updateFinalQuery("url:" + links[0]);
-                } else {
-                    updateFinalQuery(query);
-                }
-                urlSearch.executeSearch(finalQuery, 1);
+                if (links.length > 0)
+                    query = UtilMethods.buildSearchQuery(links);
+                urlSearch.executeSearch(getFinalQuery(query), 1);
             }
             else {
                 showMessageInSnackbar(getResources().getString(R.string.empty_search_box));
@@ -399,24 +406,26 @@ public class LauncherActivity extends AppCompatActivity {
         String sharedText = intent.getStringExtra(ShareActivity.EXTRA_SHARED_TEXT);
         if (sharedText != null) {
             searchEditText.setText(sharedText);
+            UtilMethods.revealView(clearSearchBoxButton);
+            clearSearchBoxButtonFlag = true;
             initializeSearch();
-            searchOptions.setVisibility(View.VISIBLE);
-            searchOptionsFlag = true;
         }
 
     }
 
-    private void updateFinalQuery(String q) {
+    private Map<String, String> getFinalQuery(String q) {
+        Map<String,String> finalQuery = new HashMap<>();
         finalQuery.clear();
         finalQuery.put("t",timeValue);
         finalQuery.put("sort", sortValue);
         finalQuery.put("q", q);
+        return finalQuery;
     }
 
-    public static void updateDialog(AppCompatActivity activity, Result result, boolean append, ResultsAdapter adapter) {
+    public static void updateDialog(AppCompatActivity activity, Result result,ResultsAdapter adapter) {
         RecyclerViewItem temp;
-        if (!append)
-            resultList.clear();
+        resultList.clear();
+        adapter.notifyDataSetChanged();
         for (Child c:
                 result.getData().getChildren()) {
             temp = UtilMethods.buildRecyclerViewItem(c);
@@ -548,21 +557,30 @@ public class LauncherActivity extends AppCompatActivity {
         savedInstanceState.putString(TIME_BUTTON_LABEL, timeButtonLabel);
         savedInstanceState.putString(TIME_VALUE, timeValue);
         savedInstanceState.putString(SORT_VALUE, sortValue);
-        savedInstanceState.putBoolean(SEARCH_OPTIONS_FLAG, searchOptionsFlag);
+        if (searchOptions.getVisibility() == View.VISIBLE)
+            savedInstanceState.putBoolean(SEARCH_OPTIONS_FLAG, true);
+        else
+            savedInstanceState.putBoolean(SEARCH_OPTIONS_FLAG, false);
+        savedInstanceState.putBoolean(CLEAR_SEARCH_BOX_BUTTON_FLAG, clearSearchBoxButtonFlag);
 
         super.onSaveInstanceState(savedInstanceState);
     }
 
     public void onRestoreInstanceState (Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        Log.d(TAG, "onRestoreInstanceState");
         sortButtonLabel = savedInstanceState.getString(SORT_BUTTON_LABEL);
         timeButtonLabel = savedInstanceState.getString(TIME_BUTTON_LABEL);
         timeValue = savedInstanceState.getString(TIME_VALUE);
         sortValue = savedInstanceState.getString(SORT_VALUE);
         searchOptionsFlag = savedInstanceState.getBoolean(SEARCH_OPTIONS_FLAG);
+        clearSearchBoxButtonFlag = savedInstanceState.getBoolean(CLEAR_SEARCH_BOX_BUTTON_FLAG);
 
         if (searchOptionsFlag) {
             searchOptions.setVisibility(View.VISIBLE);
+        }
+        if (clearSearchBoxButtonFlag) {
+            clearSearchBoxButton.setVisibility(View.VISIBLE);
         }
         timeButton.setText(timeButtonLabel);
         sortButton.setText(sortButtonLabel);
@@ -570,9 +588,8 @@ public class LauncherActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (searchOptionsFlag) {
-            searchOptionsFlag = false;
-            searchOptions.setVisibility(View.GONE);
+        if (searchOptions.getVisibility() == View.VISIBLE) {
+            UtilMethods.hideView(searchOptions, searchOptionsCenter, 0);
         }
         else {
             super.onBackPressed();
@@ -586,20 +603,16 @@ public class LauncherActivity extends AppCompatActivity {
         }
     };
 
-    private final EditText.OnClickListener searchEditTextClickListener = new EditText.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d(TAG, "Clicked search edittext");
-            searchOptions.setVisibility(View.VISIBLE);
-            searchOptionsFlag = true;
-        }
-    };
-
     private final EditText.OnTouchListener searchEditTextTouchListener = new EditText.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            searchOptions.setVisibility(View.VISIBLE);
-            searchOptionsFlag = true;
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                Log.d(TAG, "OnTouchListener - SearchOptionsFlag = " + searchOptionsFlag);
+                if (searchOptions.getVisibility() != View.VISIBLE) {
+                    Log.d(TAG, "OnTouchListener - revealing view");
+                    UtilMethods.revealView(searchOptions, searchOptionsCenter, 0);
+                }
+            }
             return false;
         }
     };
@@ -614,13 +627,27 @@ public class LauncherActivity extends AppCompatActivity {
         }
     };
 
-    private final View.OnFocusChangeListener searchFocusChangeListener= new View.OnFocusChangeListener() {
+    private final TextWatcher textChanged = new TextWatcher() {
         @Override
-        public void onFocusChange(View view, boolean hasFocus) {
-            if (!hasFocus) {
-                searchOptions.setVisibility(View.GONE);
-                searchOptionsFlag = false;
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() > 0 && clearSearchBoxButton.getVisibility() != View.VISIBLE) {
+                clearSearchBoxButtonFlag = true;
+                UtilMethods.revealView(clearSearchBoxButton);
             }
+            else if (charSequence.length() == 0) {
+                clearSearchBoxButtonFlag = false;
+                UtilMethods.hideView(clearSearchBoxButton);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
         }
     };
 
@@ -730,5 +757,10 @@ public class LauncherActivity extends AppCompatActivity {
             popupMenu.setOnMenuItemClickListener(sortPopupListener);
         }
         popupMenu.show();
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    public void clearSearchBox(View view) {
+        searchEditText.setText("");
     }
 }

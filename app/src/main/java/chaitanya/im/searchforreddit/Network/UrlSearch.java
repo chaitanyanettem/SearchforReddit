@@ -85,7 +85,7 @@ public class UrlSearch {
                             ShareActivity.updateDialog(activity, result, null, adapter);
                         }
                         else
-                            LauncherActivity.updateDialog(activity, result, false, adapter);
+                            LauncherActivity.updateDialog(activity, result, adapter);
                     }
                     else {
                         Log.d(TAG, "result=null");

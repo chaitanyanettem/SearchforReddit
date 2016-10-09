@@ -21,11 +21,20 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/recycler_card_horizontal_margin"
         android:layout_marginRight="@dimen/recycler_card_horizontal_margin"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
         android:textSize="16sp"
         android:textColor="?attr/resultTitleColor"
         android:id="@+id/post_title"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines = "1"
+        android:visibility="gone"
+        android:ellipsize="end"
+        android:layout_marginLeft="@dimen/recycler_card_horizontal_margin"
+        android:layout_marginRight="@dimen/recycler_card_horizontal_margin"
+        android:id="@+id/post_url"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,6 +42,7 @@
         android:layout_marginLeft="@dimen/recycler_card_horizontal_margin"
         android:layout_marginRight="@dimen/recycler_card_horizontal_margin"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:textSize="13.5sp"
         android:id="@+id/bottom_text_view"/>
 

@@ -1,5 +1,8 @@
 package chaitanya.im.searchforreddit;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,13 +10,16 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +59,7 @@ final class UtilMethods {
 
         Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(url));
-        Log.d(TAG, url);
+        //Log.d(TAG, url);
 
         if (browserIntent.resolveActivity(activity.getPackageManager()) != null) {
             activity.startActivity(browserIntent);
@@ -73,7 +79,7 @@ final class UtilMethods {
     }
 
     // extracts youtube id from a string
-    static String extractYoutubeID(String url) {
+    private static String extractYoutubeID(String url) {
         String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
         Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(url);
@@ -99,6 +105,7 @@ final class UtilMethods {
     static RecyclerViewItem buildRecyclerViewItem(Child c) {
         Data_ d = c.getData();
         RecyclerViewItem temp = new RecyclerViewItem();
+
         temp.setTitle(d.getTitle());
         temp.setSubreddit("/r/" + d.getSubreddit());
         temp.setAuthor("/u/" + d.getAuthor());
@@ -106,6 +113,16 @@ final class UtilMethods {
         temp.setScore(d.getScore());
         temp.setPermalink("http://m.reddit.com" + d.getPermalink());
         temp.setTimeString(UtilMethods.getTimeString(d.getCreatedUtc()));
+        temp.setSelf(d.getSelf());
+        temp.setOver18(d.getOver18());
+        temp.setUrl(d.getUrl());
+        temp.setDomain(d.getDomain());
+        temp.setLinkFlairText(d.getLinkFlairText());
+        temp.setGilded(d.getGilded());
+        temp.setArchived(d.getArchived());
+        temp.setLocked(d.getLocked());
+
+        //Log.d(TAG, temp.toString());
         return temp;
     }
 
@@ -145,5 +162,117 @@ final class UtilMethods {
         editor.putInt(activity.getString(R.string.style_pref_key), theme);
         editor.commit();
         activity.recreate();
+    }
+
+    static void revealView (final View view) {
+        revealView(view, -1, -1);
+    }
+
+    static void hideView (final View view) {
+        hideView(view, -1, -1);
+    }
+
+    @SuppressLint("NewApi")
+    static void revealView (final View view, int cx, int cy) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // get the center for the clipping circle
+            if(cx == -1) {
+                cx = view.getWidth() / 2;
+                cy = view.getHeight() / 2;
+            }
+
+            //Log.d(TAG, "cx,cy = " + cx + "," + cy);
+            // get the final radius for the clipping circle
+            final float finalRadius = (float) Math.hypot(cx, cy);
+            final int fx = cx;
+            final int fy = cy;
+
+            // create the animator for this view (the start radius is zero)
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    Animator anim =
+                            ViewAnimationUtils.createCircularReveal(view, fx, fy, 0, finalRadius);
+                    view.setVisibility(View.VISIBLE);
+                    anim.start();
+                }
+            });
+
+        }
+        else
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    view.setVisibility(View.VISIBLE);
+                }
+            });
+    }
+
+    @SuppressLint("NewApi")
+    static void hideView (final View view, int cx, int cy) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // get the center for the clipping circle
+            if (cx == -1) {
+                cx = view.getWidth() / 2;
+                cy = view.getHeight() / 2;
+            }
+
+            //Log.d(TAG, "cx,cy = " + cx + "," + cy);
+            // get the initial radius for the clipping circle
+            final float initialRadius = (float) Math.hypot(cx, cy);
+            final int fx = cx;
+            final int fy = cy;
+
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    // create the animation (the final radius is zero)
+                    Animator anim =
+                            ViewAnimationUtils.createCircularReveal(view, fx, fy, initialRadius, 0);
+                    // make the view invisible when the animation is done
+                    anim.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            view.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
+                    // start the animation
+                    anim.start();
+                }
+            });
+
+        }
+        else
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    view.setVisibility(View.INVISIBLE);
+                }
+            });
+    }
+
+    static String buildSearchQuery(String[] links) {
+        Log.d(TAG, Arrays.toString(links));
+        String redditSearchString = "";
+        for (String l: links) {
+            String youtubeID = extractYoutubeID(l);
+            if (youtubeID!=null) {
+                while (youtubeID.startsWith("-")) {
+                    youtubeID = youtubeID.substring(1);
+                }
+                redditSearchString = redditSearchString + "url:\"" + youtubeID + "\" OR ";
+            }
+            else {
+                redditSearchString = redditSearchString + "url:\"" + l + "\" OR ";
+            }
+        }
+
+        if (redditSearchString.endsWith(" OR "))
+            return redditSearchString.substring(0, redditSearchString.length() - 4);
+
+        return redditSearchString;
     }
 }

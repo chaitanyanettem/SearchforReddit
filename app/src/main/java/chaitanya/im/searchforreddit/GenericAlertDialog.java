@@ -1,5 +1,6 @@
 package chaitanya.im.searchforreddit;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -21,12 +22,13 @@ import java.util.List;
 public class GenericAlertDialog extends DialogFragment {
 
     private int whichDialog;
-    private String TAG = "GenericAlertDialog.java";
+    private final String TAG = "GenericAlertDialog.java";
     private int purchaseDialog = -1;
     private Typeface fontAwesome;
     private List<String> allPrices;
     private int skuCode;
 
+    @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class GenericAlertDialog extends DialogFragment {
                     Log.d(TAG, "allPrices = null");
                 if (priceDisplay == null)
                     Log.d(TAG, "priceDisplay = null");
+                assert priceDisplay != null;
                 priceDisplay.setText(allPrices.get(1));
 
                 if (purchaseDialog == 1) {

@@ -21,6 +21,7 @@ public class Data_ {
     private Integer score;
     @SerializedName("over_18")
     private Boolean over18;
+    private String domain;
     private Boolean hidden;
     @SerializedName("num_comments")
     private Integer numComments;
@@ -332,5 +333,13 @@ public class Data_ {
 
     public void setPostHint(String postHint) {
         this.postHint = postHint;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

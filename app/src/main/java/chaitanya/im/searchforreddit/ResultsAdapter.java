@@ -34,6 +34,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView titleTextView;
         final TextView topTextView;
+        final TextView urlTextView;
         final TextView bottomTextView;
         private final AppCompatActivity _context;
 
@@ -42,6 +43,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
             _context = context;
             titleTextView = (TextView) itemView.findViewById(R.id.post_title);
             topTextView = (TextView) itemView.findViewById(R.id.top_text_view);
+            urlTextView = (TextView) itemView.findViewById(R.id.post_url);
             bottomTextView = (TextView) itemView.findViewById(R.id.bottom_text_view);
             itemView.setOnClickListener(this);
         }
@@ -69,15 +71,21 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ViewHold
         RecyclerViewItem result = resultList.get(position);
         TextView title = viewHolder.titleTextView;
         TextView top = viewHolder.topTextView;
+        TextView url = viewHolder.urlTextView;
         TextView bottom = viewHolder.bottomTextView;
+        String bottomText;
 
-        String topText = result.getAuthor() +
-                " in <font color=#E91E63>" + result.getSubreddit() +
-                "</font>";
+        String topText = result.getAuthor() + " in <font color=#E91E63>" + result.getSubreddit() + "</font>";
 
-        String bottomText = comment + result.getNumComments() + "&nbsp;&nbsp;\u2022&nbsp;&nbsp;" +
-                result.getTimeString() + "&nbsp;&nbsp;\u2022&nbsp;" + "<font color=#FF9800> " +
-                point + result.getScore() + "</font>";
+        if (result.isSelf()) {
+             url.setVisibility(View.GONE);
+             bottomText = "self-post" + "&nbsp;&nbsp;\u2022&nbsp;&nbsp;" + comment + result.getNumComments() + "&nbsp;&nbsp;\u2022&nbsp;&nbsp;" +
+                     result.getTimeString() + "&nbsp;&nbsp;\u2022&nbsp;" + "<font color=#FF9800> " + point + result.getScore() + "</font>";
+        }
+        else {
+            bottomText = result.getDomain() + "&nbsp;&nbsp;\u2022&nbsp;&nbsp;" + comment + result.getNumComments() + "&nbsp;&nbsp;\u2022&nbsp;&nbsp;" +
+                    result.getTimeString() + "&nbsp;&nbsp;\u2022&nbsp;" + "<font color=#FF9800> " + point + result.getScore() + "</font>";
+        }
 
         bottom.setTypeface(fontawesome);
         title.setText(result.getTitle());

@@ -7,6 +7,7 @@ public class RecyclerViewItem {
     private String domain;
     private String subreddit;
     private String timeString;
+    private String url;
     private int score;
     private long utcTime;
     private int numComments;
@@ -15,6 +16,8 @@ public class RecyclerViewItem {
     private boolean archived;
     private boolean over18;
     private boolean locked;
+
+    private boolean isSelf;
 
     public String getPermalink() {
         return permalink;
@@ -126,6 +129,44 @@ public class RecyclerViewItem {
 
     public void setTimeString(String timeString) {
         this.timeString = timeString;
+    }
+
+    public boolean isSelf() {
+        return isSelf;
+    }
+
+    public void setSelf(boolean self) {
+        isSelf = self;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public String toString() {
+        return "RecyclerViewItem{" +
+                "permalink='" + permalink + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", domain='" + domain + '\'' +
+                ", subreddit='" + subreddit + '\'' +
+                ", timeString='" + timeString + '\'' +
+                ", url='" + url + '\'' +
+                ", score=" + score +
+                ", utcTime=" + utcTime +
+                ", numComments=" + numComments +
+                ", linkFlairText='" + linkFlairText + '\'' +
+                ", gilded=" + gilded +
+                ", archived=" + archived +
+                ", over18=" + over18 +
+                ", locked=" + locked +
+                ", isSelf=" + isSelf +
+                '}';
     }
 
 }

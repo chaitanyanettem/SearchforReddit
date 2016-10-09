@@ -52,7 +52,7 @@
                 android:layout_gravity="center"
                 style="?android:attr/borderlessButtonStyle"
                 android:drawableTop="@drawable/ic_pencil_box"
-                android:text="Edit Search"
+                android:text="@string/action_edit_search"
                 android:textColor="@color/material_light_white"
                 android:onClick="openLauncherActivity"
                 android:id="@+id/open_in_main_button"/>

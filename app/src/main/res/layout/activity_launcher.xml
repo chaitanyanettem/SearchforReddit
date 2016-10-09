@@ -45,7 +45,8 @@
                 android:layout_weight="0"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/magnify"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                tools:ignore="ContentDescription,VectorDrawableCompat" />
 
             <EditText
                 android:layout_width="0dp"
@@ -62,52 +63,78 @@
                 android:id="@+id/search_edit_text"/>
 
             <ImageButton
+                android:contentDescription="@string/clear_text"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_close_circle"
-                android:background="@color/color_transparent"/>
+                android:layout_height="fill_parent"
+                android:src="@drawable/ic_close"
+                android:onClick="clearSearchBox"
+                android:visibility="invisible"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:id="@+id/clearSearchBox"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_height="@dimen/toolbar_shadow"
+            android:background="@drawable/toolbar_dropshadow"
             android:visibility="gone"
-            android:background="@color/blue_tint"
-            android:weightSum="3"
-            android:id="@+id/search_options">
+            android:id="@+id/shadow2"/>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <Button
-                android:layout_width="0dp"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:text="Relevance"
-                android:textSize="12sp"
-                android:textColor="@color/colorPrimary0"
-                android:drawableTop="@drawable/ic_sort_white"
-                android:contentDescription="@string/action_sort"
-                style="?android:attr/borderlessButtonStyle"
-                android:id="@+id/sort_button"
-                android:onClick="showPopup"/>
+                android:id="@+id/launcher_refresh">
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:id="@+id/result_view_launcher"/>
+            </android.support.v4.widget.SwipeRefreshLayout>
 
-            <Button
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:text="All Time"
-                android:textSize="12sp"
-                android:textColor="@color/colorPrimary0"
-                android:drawableTop="@drawable/ic_history"
-                android:contentDescription="@string/action_time"
-                style="?android:attr/borderlessButtonStyle"
-                android:id="@+id/time_button"
-                android:onClick="showPopup"/>
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                android:background="@color/blue_tint"
+                android:weightSum="3"
+                android:id="@+id/search_options">
 
-            <!--<Button-->
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/sort_relevance"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorPrimary0"
+                    android:drawableTop="@drawable/ic_sort_white"
+                    android:contentDescription="@string/action_sort"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/sort_button"
+                    android:onClick="showPopup"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/time_all"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorPrimary0"
+                    android:drawableTop="@drawable/ic_history"
+                    android:contentDescription="@string/action_time"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/time_button"
+                    android:onClick="showPopup"/>
+
+                <!--<Button-->
                 <!--android:layout_width="0dp"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_weight="1"-->
@@ -122,36 +149,20 @@
                 <!--/>-->
 
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"
-                android:text="@string/search"
-                android:contentDescription="@string/search_description"
-                android:textColor="@color/colorPrimary0"
-                style="?android:attr/borderlessButtonStyle"
-                android:onClick="initializeSearch"/>
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/search"
+                    android:contentDescription="@string/search_description"
+                    android:textColor="@color/colorPrimary0"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:onClick="initializeSearch"/>
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_shadow"
-            android:background="@drawable/toolbar_dropshadow"
-            android:visibility="gone"
-            android:id="@+id/shadow2"/>
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/launcher_refresh">
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:id="@+id/result_view_launcher"/>
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </FrameLayout>
 
     </LinearLayout>
 

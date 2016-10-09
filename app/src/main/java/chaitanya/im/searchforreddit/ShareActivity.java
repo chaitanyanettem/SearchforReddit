@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,21 +31,17 @@ import chaitanya.im.searchforreddit.Network.UrlSearch;
 public class ShareActivity extends AppCompatActivity {
 
     private final static String TAG = "ShareActivity.java";
-    @SuppressWarnings("FieldCanBeLocal")
     private final String BASE_URL = "https://www.reddit.com";
-    @SuppressWarnings("FieldCanBeLocal")
     private final int SOURCE = 0;
     public final static String EXTRA_SHARED_TEXT = "chaitanya.im.searchforreddit.SHARED_TEXT";
 
     private TextView sharedTextView;
-    @SuppressWarnings("FieldCanBeLocal")
     private RecyclerView rvResults;
 
     private UrlSearch urlSearch;
     private String sharedText;
     private static final List<RecyclerViewItem> resultList = new ArrayList<>();
     private ResultsAdapter adapter;
-    private Map<String, String> finalQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +61,6 @@ public class ShareActivity extends AppCompatActivity {
         urlSearch = new UrlSearch(BASE_URL, this, 0, adapter);
         rvResults.setLayoutManager(new LinearLayoutManager(this));
         rvResults.addItemDecoration(new SimpleDividerItemDecoration(this, theme));
-        finalQuery = new HashMap<>();
 
         sharedTextView = (TextView) findViewById(R.id.shared_content);
         ProgressBar markerProgress = (ProgressBar) findViewById(R.id.marker_progress);
@@ -117,6 +113,7 @@ public class ShareActivity extends AppCompatActivity {
 
         if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
             sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            String editableSharedText = sharedText;
             Log.d(TAG, "Shared Text:" + sharedText);
             String sharedTextLabel = getResources().getString(R.string.shared_text) + sharedText;
             if (!sharedText.equals("")) {
@@ -124,34 +121,29 @@ public class ShareActivity extends AppCompatActivity {
                 if (UtilMethods.isNetworkAvailable(this)) {
                     String[] links = UtilMethods.extractLinks(sharedText);
                     if (links.length > 0) {
-                        Log.d(TAG, "receiveIntent() - link = " + links[0]);
-                        String youtubeID = UtilMethods.extractYoutubeID(links[0]);
-                        if (youtubeID != null)
-                            updateFinalQuery("url:" + youtubeID);
-                        else
-                            updateFinalQuery("url:" + links[0]);
-
-                    } else {
-                        updateFinalQuery(sharedText);
+                        editableSharedText = UtilMethods.buildSearchQuery(links);
+                        Log.d(TAG, "receiveIntent() - link = " + Arrays.toString(links));
                     }
-                    urlSearch.executeSearch(finalQuery, 0);
+                    urlSearch.executeSearch(getFinalQuery(editableSharedText), 0);
                 }
                 else {
                     sharedTextView.setText(getResources().getString(R.string.internet_unreachable));
                 }
             }
             else {
-                this.sharedTextView.setText(getResources().getString(R.string.empty_search));
+                sharedTextView.setText(getResources().getString(R.string.empty_search));
             }
         }
 
     }
 
-    private void updateFinalQuery(String q){
+    private Map<String, String> getFinalQuery(String q) {
+        Map<String,String> finalQuery = new HashMap<>();
         finalQuery.clear();
         finalQuery.put("t","");
         finalQuery.put("sort", "");
         finalQuery.put("q", q);
+        return finalQuery;
     }
 
     public static void updateDialog(AppCompatActivity _activity, Result result, String message, ResultsAdapter _adapter) {
