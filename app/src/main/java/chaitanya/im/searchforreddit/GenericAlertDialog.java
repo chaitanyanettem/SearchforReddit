@@ -62,14 +62,8 @@ public class GenericAlertDialog extends DialogFragment {
                     priceDisplay.setText(allPrices.get(1));
 
                     if (purchaseDialog == 1) {
-
-                        if (Build.VERSION.SDK_INT >= 24) {
-                            dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2), Html.FROM_HTML_MODE_LEGACY));
-                            purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2), Html.FROM_HTML_MODE_LEGACY));
-                        } else {
-                            dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2)));
-                            purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2)));
-                        }
+                        dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2)));
+                        purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2)));
                     }
 
                     skuCode = 1;
@@ -123,14 +117,8 @@ public class GenericAlertDialog extends DialogFragment {
                 TextView aboutCopyright = (TextView) dialogView.findViewById(R.id.about_copyright);
                 aboutText.setTypeface(fontAwesome);
                 aboutCopyright.setTypeface(fontAwesome);
-                if (Build.VERSION.SDK_INT >= 24) {
-                    aboutText.setText(Html.fromHtml(getResources().getString(R.string.about_text), Html.FROM_HTML_MODE_LEGACY));
-                    aboutVersion.setText(Html.fromHtml(versionText, Html.FROM_HTML_MODE_LEGACY));
-                } else {
-                    aboutText.setText(Html.fromHtml(getResources().getString(R.string.about_text)));
-                    aboutVersion.setText(Html.fromHtml(versionText));
-                }
-
+                aboutText.setText(Html.fromHtml(getResources().getString(R.string.about_text)));
+                aboutVersion.setText(Html.fromHtml(versionText));
                 aboutCopyright.setText(getResources().getString(R.string.about_copyright));
                 return builder.create();
 
