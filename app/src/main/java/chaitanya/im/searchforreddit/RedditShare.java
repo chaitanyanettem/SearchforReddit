@@ -28,9 +28,9 @@ import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
 import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.Network.UrlSearch;
 
-public class ShareActivity extends AppCompatActivity {
+public class RedditShare extends AppCompatActivity {
 
-    private final static String TAG = "ShareActivity.java";
+    private final static String TAG = "RedditShare.java";
     private final String BASE_URL = "https://www.reddit.com";
     private final int SOURCE = 0;
     public final static String EXTRA_SHARED_TEXT = "chaitanya.im.searchforreddit.SHARED_TEXT";
@@ -194,7 +194,7 @@ public class ShareActivity extends AppCompatActivity {
     private final ImageButton.OnLongClickListener longClickListener = new ImageButton.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            Toast buttonDesc = Toast.makeText(ShareActivity.this, v.getContentDescription(), Toast.LENGTH_SHORT);
+            Toast buttonDesc = Toast.makeText(RedditShare.this, v.getContentDescription(), Toast.LENGTH_SHORT);
             buttonDesc.setGravity(Gravity.CENTER_VERTICAL,0,0);
             buttonDesc.show();
             return false;

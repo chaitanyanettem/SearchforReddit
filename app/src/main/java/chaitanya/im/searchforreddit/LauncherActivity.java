@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,6 +111,7 @@ public class LauncherActivity extends AppCompatActivity {
     private UrlSearch urlSearch;
     private Typeface fontAwesome;
     private int searchOptionsCenter;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +134,7 @@ public class LauncherActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name,
                                            IBinder service) {
                 mService = IInAppBillingService.Stub.asInterface(service);
+                Log.d(TAG, "Service Connected");
                 getPrices();
             }
         };
@@ -151,6 +154,9 @@ public class LauncherActivity extends AppCompatActivity {
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
 
         setContentView(R.layout.activity_launcher);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         dialog = new GenericAlertDialog();
@@ -213,6 +219,8 @@ public class LauncherActivity extends AppCompatActivity {
                 R.color.reddit_orange,
                 R.color.material_light_black);
 
+        UtilMethods.getLocation();
+
         Intent intent = getIntent();
         receiveIntent(intent);
     }
@@ -233,6 +241,7 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private void getPrices() {
+        Log.d(TAG, "getPrices");
         Thread thread = new Thread(getPricesRunnable);
         thread.start();
     }
@@ -403,7 +412,7 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private void receiveIntent(Intent intent) {
-        String sharedText = intent.getStringExtra(ShareActivity.EXTRA_SHARED_TEXT);
+        String sharedText = intent.getStringExtra(RedditShare.EXTRA_SHARED_TEXT);
         if (sharedText != null) {
             searchEditText.setText(sharedText);
             UtilMethods.revealView(clearSearchBoxButton);

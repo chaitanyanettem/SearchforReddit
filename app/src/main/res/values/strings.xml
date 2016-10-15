@@ -52,6 +52,7 @@
     <string name="donate_coffee_pitch">For less than the price of a coffee &lt;font color=&#35;6B4D24&gt;&#xf0f4;&lt;/font&gt; you can support continued development of this app!</string>
     <string name="donate_features">This will unlock the Dark Theme.</string>
     <string name="donate_features2">&lt;b&gt;This donation unlocks the Dark Theme.&lt;/b&gt;&lt;br /&gt;&lt;br /&gt;Choose how much you would like to donate - </string>
+    <string name="donate_impossible">We\'re sorry but it looks like in app purchases are not possible from your phone at this point in time.</string>
 
     <string name="shared_text">Shared text:\u0020</string>
     <string name="internet_unreachable">Oh noes! The internet can\'t be reached :(</string>

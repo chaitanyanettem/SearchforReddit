@@ -18,7 +18,7 @@ import chaitanya.im.searchforreddit.DataModel.Result;
 import chaitanya.im.searchforreddit.LauncherActivity;
 import chaitanya.im.searchforreddit.R;
 import chaitanya.im.searchforreddit.ResultsAdapter;
-import chaitanya.im.searchforreddit.ShareActivity;
+import chaitanya.im.searchforreddit.RedditShare;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -82,7 +82,7 @@ public class UrlSearch {
                         Log.d(TAG, "result!=null");
                         if (source == 0) {
                             Log.d(TAG, "source = 0.");
-                            ShareActivity.updateDialog(activity, result, null, adapter);
+                            RedditShare.updateDialog(activity, result, null, adapter);
                         }
                         else
                             LauncherActivity.updateDialog(activity, result, adapter);
@@ -105,7 +105,7 @@ public class UrlSearch {
                 else {
                     Log.d(TAG, "Response unsuccessful");
                     if(source == 0) {
-                        ShareActivity.updateDialog(activity, null, HTTP_ERROR + statusCode, adapter);
+                        RedditShare.updateDialog(activity, null, HTTP_ERROR + statusCode, adapter);
                     }
                     else {
                         snackbar = Snackbar.make(coordinatorLayout, HTTP_ERROR + statusCode, Snackbar.LENGTH_INDEFINITE);
@@ -126,10 +126,10 @@ public class UrlSearch {
                 FirebaseCrash.report(new Exception(logMsg));
                 if(source == 0) {
                     if (t instanceof UnknownHostException) {
-                        ShareActivity.updateDialog(activity, null, INTERNET_ISSUE, adapter);
+                        RedditShare.updateDialog(activity, null, INTERNET_ISSUE, adapter);
                     }
                     else {
-                        ShareActivity.updateDialog(activity, null, UNKNOWN_ISSUE, adapter);
+                        RedditShare.updateDialog(activity, null, UNKNOWN_ISSUE, adapter);
                     }
                 }
                 else {

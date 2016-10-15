@@ -26,7 +26,14 @@ import java.util.regex.Pattern;
 
 import chaitanya.im.searchforreddit.DataModel.Child;
 import chaitanya.im.searchforreddit.DataModel.Data_;
+import chaitanya.im.searchforreddit.DataModel.RoughDeviceLocation;
 import chaitanya.im.searchforreddit.DataModel.RecyclerViewItem;
+import chaitanya.im.searchforreddit.Network.IpApiInterface;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 final class UtilMethods {
 
@@ -79,8 +86,8 @@ final class UtilMethods {
     }
 
     // extracts youtube id from a string
-    private static String extractYoutubeID(String url) {
-        String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+    static String extractYoutubeID(String url) {
+        String pattern = "(?<=youtu.be/|youtube.com/watch\\?v=|/videos/|embed/)[^#&\\?]*";
         Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(url);
         if (matcher.find()) {
@@ -274,5 +281,28 @@ final class UtilMethods {
             return redditSearchString.substring(0, redditSearchString.length() - 4);
 
         return redditSearchString;
+    }
+
+    static void getLocation () {
+        String BASE_URL = "http://ip-api.com/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        IpApiInterface apiInterface = retrofit.create(IpApiInterface.class);
+        Call<RoughDeviceLocation> call = apiInterface.sendLocationRequest();
+        call.enqueue(new Callback<RoughDeviceLocation>() {
+            @Override
+            public void onResponse(Call<RoughDeviceLocation> call, Response<RoughDeviceLocation> response) {
+                int statusCode = response.code();
+                RoughDeviceLocation location = response.body();
+                Log.d(TAG, location.toString());
+            }
+
+            @Override
+            public void onFailure(Call<RoughDeviceLocation> call, Throwable t) {
+
+            }
+        });
     }
 }

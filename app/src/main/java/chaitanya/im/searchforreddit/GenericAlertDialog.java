@@ -49,48 +49,54 @@ public class GenericAlertDialog extends DialogFragment {
                 final TextView coffeePitchText = (TextView) dialogView.findViewById(R.id.coffee_pitch_text);
                 coffeePitchText.setTypeface(fontAwesome);
                 coffeePitchText.setText(Html.fromHtml(getResources().getString(R.string.donate_coffee_pitch)));
-                if (allPrices == null)
-                    Log.d(TAG, "allPrices = null");
-                if (priceDisplay == null)
-                    Log.d(TAG, "priceDisplay = null");
-                assert priceDisplay != null;
-                priceDisplay.setText(allPrices.get(1));
-
-                if (purchaseDialog == 1) {
-
-                    if (Build.VERSION.SDK_INT >= 24) {
-                        dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2), Html.FROM_HTML_MODE_LEGACY));
-                        purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2), Html.FROM_HTML_MODE_LEGACY));
-                    }
-                    else {
-                        dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2)));
-                        purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2)));
-                    }
-                }
 
                 // SeekBar settings
                 AppCompatSeekBar seekBar = (AppCompatSeekBar) dialogView.findViewById(R.id.price_seekbar);
                 seekBar.setKeyProgressIncrement(1);
                 seekBar.setMax(2);
                 seekBar.setProgress(1);
-                skuCode = 1;
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                        skuCode = progress;
-                        priceDisplay.setText(allPrices.get(progress));
+
+                if (allPrices != null && allPrices.size() != 0) {
+                    // We can do a purchase since allPrices isn't null
+                    assert priceDisplay != null;
+                    priceDisplay.setText(allPrices.get(1));
+
+                    if (purchaseDialog == 1) {
+
+                        if (Build.VERSION.SDK_INT >= 24) {
+                            dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2), Html.FROM_HTML_MODE_LEGACY));
+                            purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2), Html.FROM_HTML_MODE_LEGACY));
+                        } else {
+                            dialogPurchaseTitle.setText(Html.fromHtml(getResources().getString(R.string.donate_dialog_title_2)));
+                            purchaseDescription.setText(Html.fromHtml(getResources().getString(R.string.donate_features2)));
+                        }
                     }
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    skuCode = 1;
+                    seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                            skuCode = progress;
+                            priceDisplay.setText(allPrices.get(progress));
+                        }
 
-                    }
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
 
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
+                        }
+                    });
+                }
+                else {
+                    // Aw shucks! We cannot do a purchase.
+                    skuCode = 1;
+                    seekBar.setEnabled(false);
+                    priceDisplay.setText(getResources().getString(R.string.donate_impossible));
+                }
                 return builder.create();
             case 1:
                 skuCode = -1;
@@ -103,7 +109,7 @@ public class GenericAlertDialog extends DialogFragment {
             case 2:
                 skuCode = -1;
                 dialogView = inflater.inflate(R.layout.dialog_about, null);
-                
+
                 builder.setView(dialogView)
                         .setPositiveButton(R.string.ok_string, buttonListener);
 
