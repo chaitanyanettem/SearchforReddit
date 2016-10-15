@@ -13,6 +13,7 @@
     <string name="action_dark">Dark Theme</string>
     <string name="action_licenses">Licenses</string>
     <string name="action_about">About</string>
+    <string name="action_whats_new">What\'s New?</string>
 
     <string name="time_24">24 hours</string>
     <string name="time_week">Week</string>
@@ -36,7 +37,6 @@
     <string name="about_text">&lt;font color=&#35;2196F3&gt;Search for Reddit &lt;/font&gt; is made with &lt;font color=&#35;B71C1C&gt; &#xf004; &lt;/font&gt; in Bengaluru, India.&lt;br /&gt;</string>
     <string name="about_copyright">&#xf1f9; Chaitanya Nettem chaitanya.im</string>
     <string name="license_apache">Licensed under the Apache License, Version 2.0 (the "License");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n\thttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an "AS IS" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.</string>
-
     <string name="empty_search_box">Please enter something in the search box &#xf118;</string>
     <string name="clear_text">Clear the search box</string>
     <string name="no_internet">Oh noes! The internet cannot be reached &#xf119;</string>
@@ -58,4 +58,6 @@
     <string name="internet_unreachable">Oh noes! The internet can\'t be reached :(</string>
     <string name="empty_search">Empty search :(</string>
     <string name="number_of_results_string">Number of results:\u0020</string>
+
+    <string name="hn_beta">This feature is a work in progress.</string>
 </resources>
