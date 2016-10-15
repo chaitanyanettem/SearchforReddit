@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
@@ -120,6 +118,16 @@ public class GenericAlertDialog extends DialogFragment {
                 aboutText.setText(Html.fromHtml(getResources().getString(R.string.about_text)));
                 aboutVersion.setText(Html.fromHtml(versionText));
                 aboutCopyright.setText(getResources().getString(R.string.about_copyright));
+                return builder.create();
+
+            case 3:
+                skuCode = -1;
+                dialogView = inflater.inflate(R.layout.dialog_whats_new, null);
+                builder.setView(dialogView)
+                        .setTitle("What's New?")
+                        .setPositiveButton(R.string.ok_string, buttonListener);
+                TextView whatsNewText = (TextView) dialogView.findViewById(R.id.whats_new_text);
+                whatsNewText.setText(Html.fromHtml(StringResources.whatsNew));
                 return builder.create();
 
             default:

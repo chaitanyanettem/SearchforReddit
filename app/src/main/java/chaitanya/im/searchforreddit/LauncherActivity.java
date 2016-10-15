@@ -526,11 +526,13 @@ public class LauncherActivity extends AppCompatActivity {
             case R.id.action_refresh:
                 initializeSearch();
                 return true;
+
             case R.id.action_donate:
                 dialog.setWhichDialog(0);
                 dialog.setPurchaseDialog(-1);
                 dialog.show(getSupportFragmentManager(), "tag");
                 return true;
+
             case R.id.action_dark:
                 if (donate == 1) {
                     isChecked = !(item.isChecked());
@@ -547,14 +549,22 @@ public class LauncherActivity extends AppCompatActivity {
                     dialog.show(getSupportFragmentManager(), "tag");
                     return true;
                 }
+
             case R.id.action_licenses:
                 dialog.setWhichDialog(1);
                 dialog.show(getSupportFragmentManager(), "tag");
                 return true;
+
             case R.id.action_about:
                 dialog.setWhichDialog(2);
                 dialog.show(getSupportFragmentManager(), "tag");
                 return true;
+
+            case R.id.action_whats_new:
+                dialog.setWhichDialog(3);
+                dialog.show(getSupportFragmentManager(), "tag");
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
